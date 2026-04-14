@@ -1,38 +1,47 @@
-import Home from "./App/Home";
-import Gallery from "./App/Gallery";
-import GalleryUpload from './App/GalleryUpload';
-import GalleryAdmin from './GalleryAdmin';
-import AdminLogin from './App/login';
-import Footer from "./App/Footer";
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Product from "./App/Product";
-import Services from "./App/Services"; 
-import Header from "./App/Header";
-import About from "./App/About";
-import { HelmetProvider } from "react-helmet-async";  // ✅ Add this
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { HelmetProvider } from "react-helmet-async";
 
-export function MyApp() {
+// Pages
+import Home from "./pages/Home";
+import Gallery from "./pages/Gallery";
+import GalleryUpload from "./pages/GalleryUpload";
+import GalleryAdmin from "./pages/admin/GalleryAdmin";
+import AdminLogin from "./pages/login";
+import Product from "./pages/Product";
+import Services from "./pages/Services";
+import About from "./pages/About";
+import CartProvider from "./context/CartContext"; // Note: This was a default export in your file
+
+// Components
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+
+export default function MyApp() {
   return (
-    <HelmetProvider>  {/* ✅ Wrap the whole app here */}
-      <Router>
-        <Header/>
+    <HelmetProvider>
+      <CartProvider> 
+        <Router>
+          <Header /> {/* 2. Now Header is INSIDE the provider */}
 
-        <Routes>
-          <Route exact path='/' element={<Home />} />
-          <Route exact path='/Gallery' element={<Gallery />} />
-          <Route path="/admin/gallery" element={<GalleryAdmin />} />
-          <Route path="/admin/login" element={<AdminLogin />} />
-           <Route path="/upload" element={<GalleryUpload />} />
-          <Route exact path='/Product' element={<Product />} />
-          <Route exact path='/Services' element={<Services />} />
-          <Route exact path='/About' element={<About />} />
-        </Routes>  
+          <Routes>
+            {/* PUBLIC */}
+            <Route path="/" element={<Home />} />
+            <Route path="/gallery" element={<Gallery />} />
+            <Route path="/product" element={<Product />} />
+            <Route path="/services" element={<Services />} />
+            <Route path="/about" element={<About />} />
 
-        <Footer />
-      </Router>
+            {/* ADMIN */}
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin/gallery" element={<GalleryAdmin />} />
+
+            {/* UPLOAD */}
+            <Route path="/upload" element={<GalleryUpload />} />
+          </Routes>
+
+          <Footer />
+        </Router>
+      </CartProvider>
     </HelmetProvider>
   );
 }
-
-export default MyApp;
-

@@ -11,15 +11,21 @@ import {
   useMediaQuery,
   useTheme,
   Zoom,
+  Badge,
   Fab,
   Divider,
 } from '@mui/material';
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import MenuIcon from '@mui/icons-material/Menu';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import { motion } from 'framer-motion';
 import { styled } from '@mui/material/styles';
 
-// Styled button with glow effect
+// Internal Components
+import CartDrawer from "./CartDrawer";
+import { useCart } from "../context/CartContext";
+
+// Styled components
 const GlowButton = styled(Button)(({ theme }) => ({
   '&:hover': {
     boxShadow: `0 0 15px ${theme.palette.success.main}`,
@@ -35,9 +41,7 @@ const GlowButton = styled(Button)(({ theme }) => ({
 
 const HoverMenuIcon = styled(MenuIcon)({
   transition: 'transform 0.3s ease',
-  '&:hover': {
-    transform: 'rotate(90deg)',
-  },
+  '&:hover': { transform: 'rotate(90deg)' },
 });
 
 const LogoContainer = styled('div')(({ theme }) => ({
@@ -51,9 +55,7 @@ const LogoImage = styled('img')(({ theme }) => ({
   height: 44,
   width: 'auto',
   transition: 'all 0.3s ease',
-  [theme.breakpoints.down('sm')]: {
-    height: 36,
-  },
+  [theme.breakpoints.down('sm')]: { height: 36 },
 }));
 
 const navLinks = [
@@ -67,9 +69,13 @@ const navLinks = [
 export default function Header() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const navigate = useNavigate();
+  
   const [anchorEl, setAnchorEl] = useState(null);
   const [scrolled, setScrolled] = useState(false);
-  const navigate = useNavigate();
+  const [cartOpen, setCartOpen] = useState(false);
+  
+  const { cart } = useCart();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);
@@ -79,10 +85,7 @@ export default function Header() {
 
   const handleMenu = (e) => setAnchorEl(e.currentTarget);
   const handleClose = () => setAnchorEl(null);
-
-  const handleAdminLogin = () => {
-    navigate('/admin/login');
-  };
+  const handleAdminLogin = () => navigate('/admin/login');
 
   return (
     <>
@@ -119,15 +122,9 @@ export default function Header() {
             </LogoContainer>
           </NavLink>
 
-          {/* Nav Links */}
+          {/* Desktop Nav Links */}
           {!isMobile && (
-            <Box
-              component={motion.div}
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.4 }}
-              sx={{ display: 'flex', gap: 2 }}
-            >
+            <Box sx={{ display: 'flex', gap: 2 }}>
               {navLinks.map(({ path, label }) => (
                 <Button
                   key={path}
@@ -136,29 +133,9 @@ export default function Header() {
                   sx={{
                     color: 'white',
                     fontWeight: 600,
-                    fontSize: '0.95rem',
-                    fontFamily: '"Poppins", sans-serif',
-                    position: 'relative',
                     textTransform: 'none',
                     px: 2,
-                    '&::after': {
-                      content: '""',
-                      position: 'absolute',
-                      bottom: -2,
-                      left: 0,
-                      width: '100%',
-                      height: '2px',
-                      backgroundColor: '#00B6AD',
-                      transform: 'scaleX(0)',
-                      transformOrigin: 'left',
-                      transition: 'transform 0.3s ease',
-                    },
-                    '&:hover::after, &.active::after': {
-                      transform: 'scaleX(1)',
-                    },
-                    '&.active': {
-                      color: '#00B6AD',
-                    },
+                    '&.active': { color: '#00B6AD' },
                   }}
                 >
                   {label}
@@ -167,139 +144,92 @@ export default function Header() {
             </Box>
           )}
 
-          {/* Right Side Buttons */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            {!isMobile && (
+          {/* Right Side Actions */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1, sm: 2 } }}>
+            
+            {/* Cart Icon - Visible on all devices */}
+            <IconButton color="inherit" onClick={() => setCartOpen(true)}>
+              <Badge badgeContent={cart?.length || 0} color="error">
+                <ShoppingCartIcon />
+              </Badge>
+            </IconButton>
+
+            {!isMobile ? (
               <>
-                {/* WhatsApp Button */}
                 <Box component={motion.div} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                   <GlowButton
                     variant="contained"
-                    color="success"
                     href="https://wa.me/233571901526"
                     target="_blank"
                     startIcon={<WhatsAppIcon />}
                     sx={{
-                      textTransform: 'none',
-                      fontWeight: 600,
-                      fontFamily: '"Poppins", sans-serif',
                       borderRadius: '50px',
-                      px: 3,
                       backgroundColor: '#25d366',
-                      '&:hover': {
-                        backgroundColor: '#1ebf5b',
-                      },
+                      '&:hover': { backgroundColor: '#1ebf5b' },
                     }}
                   >
                     WhatsApp
                   </GlowButton>
                 </Box>
 
-                {/* Admin Login Button */}
                 <Button
                   variant="outlined"
                   onClick={handleAdminLogin}
                   sx={{
                     color: 'white',
                     borderColor: 'white',
-                    fontWeight: 600,
-                    textTransform: 'none',
-                    px: 2,
-                    '&:hover': {
-                      backgroundColor: 'white',
-                      color: '#00B6AD',
-                    },
+                    '&:hover': { backgroundColor: 'white', color: '#00B6AD' },
                   }}
                 >
                   Login
                 </Button>
               </>
-            )}
-
-            {/* Mobile Menu */}
-            {isMobile && (
-              <>
-                <IconButton color="inherit" onClick={handleMenu}>
-                  <HoverMenuIcon fontSize="large" />
-                </IconButton>
-                <Menu
-                  anchorEl={anchorEl}
-                  open={Boolean(anchorEl)}
-                  onClose={handleClose}
-                  PaperProps={{
-                    elevation: 0,
-                    sx: { mt: 1.5, minWidth: '200px', borderRadius: 2, p: 1 },
-                  }}
-                  transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                  anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-                  component={motion.div}
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  {navLinks.map(({ path, label }) => (
-                    <MenuItem
-                      key={path}
-                      component={NavLink}
-                      to={path}
-                      onClick={handleClose}
-                      sx={{
-                        py: 1.5,
-                        fontFamily: '"Poppins", sans-serif',
-                        '&.active': { color: '#00B6AD', fontWeight: 'bold' },
-                      }}
-                    >
-                      {label}
-                    </MenuItem>
-                  ))}
-                  <Divider />
-                  <MenuItem
-                    component="a"
-                    href="https://wa.me/233571901526"
-                    target="_blank"
-                    sx={{ color: '#00B6AD', fontWeight: 'bold', fontFamily: '"Poppins", sans-serif' }}
-                  >
-                    <WhatsAppIcon sx={{ mr: 1 }} />
-                    Contact Us
-                  </MenuItem>
-                  <MenuItem
-                    onClick={() => {
-                      handleClose();
-                      navigate('/admin/login');
-                    }}
-                    sx={{ color: '#00B6AD', fontWeight: 'bold', fontFamily: '"Poppins", sans-serif' }}
-                  >
-                    Admin Login
-                  </MenuItem>
-                </Menu>
-              </>
+            ) : (
+              <IconButton color="inherit" onClick={handleMenu}>
+                <HoverMenuIcon fontSize="large" />
+              </IconButton>
             )}
           </Box>
         </Toolbar>
       </AppBar>
 
-      {/* Floating WhatsApp Button for Mobile */}
+      {/* Shared Cart Drawer */}
+      <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} />
+
+      {/* Mobile Side Menu */}
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+        PaperProps={{ sx: { mt: 1.5, minWidth: '200px', borderRadius: 2 } }}
+      >
+        {navLinks.map(({ path, label }) => (
+          <MenuItem key={path} component={NavLink} to={path} onClick={handleClose}>
+            {label}
+          </MenuItem>
+        ))}
+        <Divider />
+        <MenuItem component="a" href="https://wa.me/233571901526" target="_blank">
+          <WhatsAppIcon sx={{ mr: 1, color: '#25d366' }} /> Contact Us
+        </MenuItem>
+        <MenuItem onClick={() => { handleClose(); handleAdminLogin(); }}>
+          Admin Login
+        </MenuItem>
+      </Menu>
+
+      {/* Floating WhatsApp for Mobile */}
       {isMobile && (
         <Zoom in={true}>
           <Fab
-            component={motion.a}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
             href="https://wa.me/233571901526"
             target="_blank"
             color="success"
-            size="medium"
             sx={{
               position: 'fixed',
               bottom: 16,
               right: 16,
               zIndex: 1300,
               backgroundColor: '#00B6AD',
-              boxShadow: '0px 4px 10px rgba(0,0,0,0.3)',
-              '&:hover': {
-                backgroundColor: '#009c94',
-              },
             }}
           >
             <WhatsAppIcon />

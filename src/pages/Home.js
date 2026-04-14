@@ -125,7 +125,7 @@ const Hero = () => (
               initial={{ scale: 1.05, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 1.2 }}
-              style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
+              style={{ width: '100%', height: '200%', objectFit: 'cover', objectPosition: 'center 10%', }}
             />
 
             <Box
@@ -307,7 +307,7 @@ const BookingForm = () => {
   );
 
   return (
-    <Container maxWidth="md" sx={{ my: { xs: 4, md: 10 } }}>
+    <Container maxWidth="md" sx={{ my: { xs: 4, md: 10 },}}>
       <Paper sx={{ p: { xs: 2, md: 5 }, borderRadius: 3, boxShadow: 6 }} component="form" onSubmit={submit}>
         <Typography id="booking-form" variant="h4" textAlign="center" sx={{ fontWeight: 700, mb: 1 }}>
           Request Your Appointment
@@ -316,7 +316,7 @@ const BookingForm = () => {
           Fill the form and we will reach out within 24 hours to confirm your booking.
         </Typography>
 
-        <Grid container spacing={3}>
+        <Grid container spacing={4}>
           <Grid item xs={12} sm={6}>
             <TextField fullWidth label="Full Name *" name="fullName" value={form.fullName} onChange={handleChange} required />
           </Grid>
@@ -402,7 +402,12 @@ const BookingForm = () => {
 
           <Grid item xs={12}>
             <Stack direction="row" justifyContent="center">
-              <Button type="submit" variant="contained" disabled={loading} sx={{ bgcolor: THEME.primary, borderRadius: '999px', px: 4, py: 1.25 }}>
+             
+            </Stack>
+          </Grid>
+        </Grid>
+<Box textAlign="center" mt={4}>
+ <Button type="submit" variant="contained" disabled={loading} sx={{ bgcolor: THEME.primary, borderRadius: '999px', px: 4, py: 1.25,  objectPosition: 'center'}}>
                 {loading ? (
                   <Stack direction="row" spacing={1} alignItems="center">
                     <CircularProgress size={20} sx={{ color: '#fff' }} />
@@ -412,9 +417,7 @@ const BookingForm = () => {
                   'Submit Booking Request'
                 )}
               </Button>
-            </Stack>
-          </Grid>
-        </Grid>
+</Box>
       </Paper>
     </Container>
   );
