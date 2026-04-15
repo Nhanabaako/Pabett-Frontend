@@ -34,7 +34,7 @@ export default function Products() {
               <CardContent>
                 <Typography fontWeight={600}>{p.name}</Typography>
                 <Typography color="primary">Ghc {p.price}</Typography>
- <box>
+ <Box>
                 <Button
                   fullWidth
                   variant="contained"
@@ -42,7 +42,7 @@ export default function Products() {
                 >
                   Add to Cart
                 </Button>
-                </box>
+                </Box>
               </CardContent>
             </Card>
           </Grid>

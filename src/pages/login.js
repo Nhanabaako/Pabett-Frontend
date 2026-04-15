@@ -1,5 +1,6 @@
 // src/pages/AdminLogin.js
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // Add this
 import {
   Box,
   Button,
@@ -16,6 +17,8 @@ export default function AdminLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate(); // Initialize navigate
+
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
@@ -27,6 +30,7 @@ export default function AdminLogin() {
     setLoading(true);
 
     try {
+      // 1. Double-check this port (5000 is standard for Node backends)
       const res = await fetch("http://localhost:5000/api/admin/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -36,15 +40,16 @@ export default function AdminLogin() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Invalid credentials");
 
-      // ✅ Use adminKey (consistent with GalleryAdmin.js)
+      // 2. Consistent key storage
       localStorage.setItem("adminKey", data.adminKey);
 
-      showSnackbar("✅ Login successful! Redirecting...", "success");
+      showSnackbar("✅ Login successful!", "success");
 
-      // Redirect after short delay
+      // 3. Use navigate for a smoother React transition
       setTimeout(() => {
-        window.location.href = "/admin/gallery-upload";
+      navigate("/admin"); // Redirect to the dashboard home
       }, 1000);
+
     } catch (err) {
       console.error(err);
       showSnackbar(err.message, "error");
@@ -78,26 +83,29 @@ export default function AdminLogin() {
           bgcolor: "#fafafa",
         }}
       >
-        <Typography variant="h4" fontWeight={700} gutterBottom>
+        <Typography variant="h4" fontWeight={700} gutterBottom sx={{ color: "#00B6AD" }}>
           🔐 Admin Login
         </Typography>
         <Typography variant="body2" color="text.secondary" mb={3}>
-          Enter your credentials to access the Gallery Dashboard
+          Enter your credentials to access the Pabett Dashboard
         </Typography>
 
         <Box component="form" onSubmit={handleLogin} sx={{ textAlign: "left" }}>
           <TextField
             fullWidth
             label="Email"
+            variant="outlined"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             margin="normal"
             required
+            sx={{ mb: 2 }}
           />
           <TextField
             fullWidth
             label="Password"
             type="password"
+            variant="outlined"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             margin="normal"
@@ -108,15 +116,21 @@ export default function AdminLogin() {
             fullWidth
             variant="contained"
             type="submit"
-            sx={{ mt: 3 }}
+            size="large"
             disabled={loading}
+            sx={{ 
+              mt: 4, 
+              py: 1.5,
+              fontWeight: 'bold',
+              bgcolor: "#00B6AD",
+              "&:hover": { bgcolor: "#009c94" }
+            }}
           >
-            {loading ? <CircularProgress size={24} color="inherit" /> : "Login"}
+            {loading ? <CircularProgress size={24} color="inherit" /> : "Login to Dashboard"}
           </Button>
         </Box>
       </Paper>
 
-      {/* Snackbar Notifications */}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={4000}
@@ -126,7 +140,7 @@ export default function AdminLogin() {
         <Alert
           onClose={() => setSnackbar({ ...snackbar, open: false })}
           severity={snackbar.severity}
-          sx={{ width: "100%" }}
+          sx={{ width: "100%", borderRadius: 2 }}
         >
           {snackbar.message}
         </Alert>

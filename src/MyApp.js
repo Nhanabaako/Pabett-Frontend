@@ -1,41 +1,65 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 
-// Pages
+// CONTEXT
+import CartProvider from "./context/CartContext";
+
+// LAYOUT
+import AdminLayout from "./layouts/AdminLayout";
+
+// ADMIN PAGES
+import Dashboard from "./pages/admin/Dashboard";
+import GalleryAdmin from "./pages/admin/GalleryAdmin";
+import ProductsAdmin from "./pages/admin/ProductsAdmin";
+import AdminLogin from "./pages/login";
+
+// PUBLIC PAGES
 import Home from "./pages/Home";
 import Gallery from "./pages/Gallery";
-import GalleryUpload from "./pages/GalleryUpload";
-import GalleryAdmin from "./pages/admin/GalleryAdmin";
-import AdminLogin from "./pages/login";
 import Product from "./pages/Product";
 import Services from "./pages/Services";
 import About from "./pages/About";
-import CartProvider from "./context/CartContext"; // Note: This was a default export in your file
+import GalleryUpload from "./pages/GalleryUpload";
 
-// Components
+// COMPONENTS
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 
 export default function MyApp() {
   return (
     <HelmetProvider>
-      <CartProvider> 
+      <CartProvider>
         <Router>
-          <Header /> {/* 2. Now Header is INSIDE the provider */}
+          <Header />
 
           <Routes>
-            {/* PUBLIC */}
+            {/* ================= PUBLIC ================= */}
             <Route path="/" element={<Home />} />
             <Route path="/gallery" element={<Gallery />} />
             <Route path="/product" element={<Product />} />
             <Route path="/services" element={<Services />} />
             <Route path="/about" element={<About />} />
 
-            {/* ADMIN */}
-            <Route path="/admin/login" element={<AdminLogin />} />
-            <Route path="/admin/gallery" element={<GalleryAdmin />} />
+           <Route path="/admin/login" element={<AdminLogin />} />
 
-            {/* UPLOAD */}
+<Route path="/admin/dashboard" element={
+  <AdminLayout>
+    <Dashboard />
+  </AdminLayout>
+} />
+
+<Route path="/admin/gallery" element={
+  <AdminLayout>
+    <GalleryAdmin />
+  </AdminLayout>
+} />
+
+<Route path="/admin/products" element={
+  <AdminLayout>
+    <ProductsAdmin />
+  </AdminLayout>
+} />
+            {/* ================= UPLOAD (OPTIONAL) ================= */}
             <Route path="/upload" element={<GalleryUpload />} />
           </Routes>
 

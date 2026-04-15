@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import UploadDropzone from "../../components/UploadDropzone";
-import {
+import UploadDropzone from "../../components/UploadDropzone";import {
   Box,
   Button,
   TextField,
