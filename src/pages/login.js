@@ -47,7 +47,7 @@ export default function AdminLogin() {
 
       // 3. Use navigate for a smoother React transition
       setTimeout(() => {
-      navigate("/admin"); // Redirect to the dashboard home
+      navigate("/admin/Dashboard"); // Redirect to the dashboard home
       }, 1000);
 
     } catch (err) {
