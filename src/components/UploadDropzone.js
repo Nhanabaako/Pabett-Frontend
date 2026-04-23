@@ -22,7 +22,6 @@ export default function UploadDropzone({
 
       let selected = multiple ? acceptedFiles : [acceptedFiles[0]];
 
-      // LIMIT FILES
       if (selected.length > maxFiles) {
         setError(`Max ${maxFiles} images allowed`);
         return;
@@ -37,41 +36,25 @@ export default function UploadDropzone({
       setFiles(mapped);
       setError("");
 
-      // 🔥 SEND CORRECT DATA
-      if (multiple) {
-        onChange(mapped.map((f) => f.file));
-      } else {
-        onChange(mapped[0].file);
-      }
+      onChange(multiple ? mapped.map((f) => f.file) : mapped[0].file);
     },
     [multiple, maxFiles, onChange]
   );
 
-  // CLEAN MEMORY
   useEffect(() => {
-    return () => {
-      files.forEach((f) => URL.revokeObjectURL(f.preview));
-    };
+    return () => files.forEach((f) => URL.revokeObjectURL(f.preview));
   }, [files]);
 
-  // REMOVE FILE
   const removeFile = (id) => {
     const updated = files.filter((f) => f.id !== id);
     setFiles(updated);
-
-    if (multiple) {
-      onChange(updated.map((f) => f.file));
-    } else {
-      onChange(null);
-    }
+    onChange(multiple ? updated.map((f) => f.file) : null);
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     multiple,
-    accept: {
-      "image/*": [".jpg", ".jpeg", ".png", ".webp"],
-    },
+    accept: { "image/*": [".jpg", ".jpeg", ".png", ".webp"] },
   });
 
   return (

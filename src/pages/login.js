@@ -1,6 +1,6 @@
 // src/pages/AdminLogin.js
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Add this
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Button,
@@ -13,11 +13,20 @@ import {
   Alert,
 } from "@mui/material";
 
+const API_URL =
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:5000"
+    : process.env.REACT_APP_API_URL;
+
 export default function AdminLogin() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+  });
+
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate(); // Initialize navigate
 
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -25,108 +34,83 @@ export default function AdminLogin() {
     severity: "info",
   });
 
+  const showSnackbar = (message, severity = "info") => {
+    setSnackbar({ open: true, message, severity });
+  };
+
+  const handleChange = (e) => {
+    setForm((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
+
+    if (!form.email || !form.password) {
+      return showSnackbar("Please fill all fields", "warning");
+    }
+
     setLoading(true);
 
     try {
-      // 1. Double-check this port (5000 is standard for Node backends)
-      const res = await fetch("http://localhost:5000/api/admin/login", {
+      const res = await fetch(`${API_URL}/api/admin/login`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(form),
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Invalid credentials");
 
-      // 2. Consistent key storage
-      localStorage.setItem("adminKey", data.adminKey);
+      if (!res.ok) throw new Error(data.error || "Login failed");
 
-      showSnackbar("✅ Login successful!", "success");
+      // ✅ STORE TOKEN (IMPORTANT)
+      localStorage.setItem("token", data.token);
 
-      // 3. Use navigate for a smoother React transition
+      showSnackbar("Login successful ✅", "success");
+
       setTimeout(() => {
-      navigate("/admin/Dashboard"); // Redirect to the dashboard home
-      }, 1000);
-
+        navigate("/admin/dashboard");
+      }, 800);
     } catch (err) {
-      console.error(err);
       showSnackbar(err.message, "error");
     } finally {
       setLoading(false);
     }
   };
 
-  const showSnackbar = (message, severity = "info") => {
-    setSnackbar({ open: true, message, severity });
-  };
-
   return (
-    <Container
-      maxWidth="sm"
-      sx={{
-        mt: 10,
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        minHeight: "70vh",
-      }}
-    >
-      <Paper
-        elevation={3}
-        sx={{
-          p: 4,
-          borderRadius: 3,
-          width: "100%",
-          textAlign: "center",
-          bgcolor: "#fafafa",
-        }}
-      >
-        <Typography variant="h4" fontWeight={700} gutterBottom sx={{ color: "#00B6AD" }}>
-          🔐 Admin Login
-        </Typography>
-        <Typography variant="body2" color="text.secondary" mb={3}>
-          Enter your credentials to access the Pabett Dashboard
-        </Typography>
+    <Container maxWidth="sm" sx={{ mt: 10 }}>
+      <Paper sx={{ p: 4 }}>
+        <Typography variant="h4">🔐 Admin Login</Typography>
 
-        <Box component="form" onSubmit={handleLogin} sx={{ textAlign: "left" }}>
+        <Box component="form" onSubmit={handleLogin}>
           <TextField
             fullWidth
             label="Email"
-            variant="outlined"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            margin="normal"
-            required
-            sx={{ mb: 2 }}
-          />
-          <TextField
-            fullWidth
-            label="Password"
-            type="password"
-            variant="outlined"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            name="email"
+            value={form.email}
+            onChange={handleChange}
             margin="normal"
             required
           />
 
-          <Button
+          <TextField
             fullWidth
-            variant="contained"
-            type="submit"
-            size="large"
-            disabled={loading}
-            sx={{ 
-              mt: 4, 
-              py: 1.5,
-              fontWeight: 'bold',
-              bgcolor: "#00B6AD",
-              "&:hover": { bgcolor: "#009c94" }
-            }}
-          >
-            {loading ? <CircularProgress size={24} color="inherit" /> : "Login to Dashboard"}
+            label="Password"
+            name="password"
+            type="password"
+            value={form.password}
+            onChange={handleChange}
+            margin="normal"
+            required
+          />
+
+          <Button fullWidth type="submit" disabled={loading}>
+            {loading ? <CircularProgress size={24} /> : "Login"}
           </Button>
         </Box>
       </Paper>
@@ -134,14 +118,9 @@ export default function AdminLogin() {
       <Snackbar
         open={snackbar.open}
         autoHideDuration={4000}
-        onClose={() => setSnackbar({ ...snackbar, open: false })}
-        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        onClose={() => setSnackbar((s) => ({ ...s, open: false }))}
       >
-        <Alert
-          onClose={() => setSnackbar({ ...snackbar, open: false })}
-          severity={snackbar.severity}
-          sx={{ width: "100%", borderRadius: 2 }}
-        >
+        <Alert severity={snackbar.severity}>
           {snackbar.message}
         </Alert>
       </Snackbar>
