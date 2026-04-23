@@ -1,317 +1,260 @@
 import React, { useEffect, useState } from "react";
 import { apiFetch } from "../api/api";
 import { useCart } from "../context/CartContext";
-import { motion } from "framer-motion";
 import {
-  Box, Grid, Card, CardMedia, CardContent, Typography,
-  Button, Container, Chip, Tab, Tabs, CircularProgress,
-  Stack,
+  Box, Grid, Card, CardMedia, CardContent,
+  Typography, Button, Container, Chip,
+  CircularProgress, Stack,
 } from "@mui/material";
-import ShoppingCartIcon  from "@mui/icons-material/ShoppingCart";
-import StorefrontIcon    from "@mui/icons-material/Storefront";
+import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 
-// ── Must mirror backend VALID_CATEGORIES & ProductsAdmin PRODUCT_CATEGORIES ──
+// ── Must mirror PRODUCT_CATEGORIES in ProductsAdmin.js ──────────────
 const CATEGORY_META = {
-  hair_oil: {
-    label:       "Hair Growth Oil",
-    description: "Signature formulas to nourish and strengthen your hair.",
-    color:       "#4caf50",
-  },
-  hair_care: {
-    label:       "Hair Care",
-    description: "Treatments and products for healthy, vibrant hair.",
-    color:       "#2196f3",
-  },
-  skincare: {
-    label:       "Skincare",
-    description: "Premium skincare to reveal your natural radiance.",
-    color:       "#e91e63",
-  },
-  accessories: {
-    label:       "Accessories",
-    description: "Curated accessories to complete every look.",
-    color:       "#ff9800",
-  },
-  tools: {
-    label:       "Styling Tools",
-    description: "Professional tools for salon-quality results at home.",
-    color:       "#9c27b0",
-  },
-  other: {
-    label:       "Other",
-    description: "More products from our collection.",
-    color:       "#607d8b",
-  },
+  hair_oil:    { label: "Hair Growth Oil",  color: "#4caf50" },
+  hair_care:   { label: "Hair Care",        color: "#2196f3" },
+  skincare:    { label: "Skincare",         color: "#e91e63" },
+  accessories: { label: "Accessories",      color: "#ff9800" },
+  tools:       { label: "Styling Tools",    color: "#9c27b0" },
+  other:       { label: "Other",            color: "#607d8b" },
 };
 
-const PRIMARY  = "#00B6AD";
-const DARK_TEXT = "#2C3E64";
+// Display order
+const CATEGORY_ORDER = ["hair_oil", "hair_care", "skincare", "accessories", "tools", "other"];
 
-const itemVariants = {
-  hidden: { opacity: 0, y: 24 },
-  show:   { opacity: 1, y: 0, transition: { duration: 0.5 } },
-};
-const stagger = {
-  hidden: {},
-  show:   { transition: { staggerChildren: 0.08 } },
-};
+const primaryColor  = "#00B6AD";
+const darkTextColor = "#2C3E64";
+
+const API_BASE =
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:5000"
+    : process.env.REACT_APP_API_URL || "";
 
 export default function Products() {
-  const [allProducts, setAllProducts] = useState([]);
-  const [groups,      setGroups]      = useState([]);   // [{ key, ...meta, items }]
-  const [activeTab,   setActiveTab]   = useState(0);
-  const [loading,     setLoading]     = useState(true);
+  const [products,   setProducts]   = useState([]);
+  const [loading,    setLoading]    = useState(true);
+  const [activecat,  setActiveCat]  = useState("all");
   const { addToCart } = useCart();
 
   useEffect(() => {
     apiFetch("/api/products")
-      .then((data) => {
-        setAllProducts(data);
-
-        // Group by category in CATEGORY_META order
-        const grouped = data.reduce((acc, p) => {
-          const key = p.category || "other";
-          if (!acc[key]) acc[key] = [];
-          acc[key].push(p);
-          return acc;
-        }, {});
-
-        const ordered = Object.keys(CATEGORY_META)
-          .filter((key) => grouped[key]?.length > 0)
-          .map((key) => ({
-            key,
-            ...CATEGORY_META[key],
-            items: grouped[key],
-          }));
-
-        setGroups(ordered);
-      })
-      .catch(console.error)
-      .finally(() => setLoading(false));
+      .then((data) => { setProducts(data); setLoading(false); })
+      .catch((err)  => { console.error(err); setLoading(false); });
   }, []);
 
-  const activeGroup = groups[activeTab];
+  // Build grouped sections in order, only non-empty ones
+  const grouped = CATEGORY_ORDER.reduce((acc, key) => {
+    const items = products.filter((p) => (p.category || "other") === key);
+    if (items.length > 0) acc[key] = items;
+    return acc;
+  }, {});
+
+  const displayProducts =
+    activecat === "all"
+      ? products
+      : products.filter((p) => (p.category || "other") === activecat);
+
+  const availableCategories = CATEGORY_ORDER.filter((k) => grouped[k]);
+
+  if (loading) {
+    return (
+      <Container sx={{ py: 10, textAlign: "center" }}>
+        <CircularProgress sx={{ color: primaryColor }} />
+      </Container>
+    );
+  }
 
   return (
     <Box sx={{ bgcolor: "#F7F9FB", minHeight: "100vh" }}>
-
-      {/* ── Page Header ─────────────────────────────────────────────── */}
+      {/* ── Page Header ── */}
       <Box
         sx={{
-          py: { xs: 6, md: 8 },
-          textAlign: "center",
-          bgcolor: DARK_TEXT,
+          py: 6, textAlign: "center",
+          background: `linear-gradient(135deg, ${darkTextColor} 0%, #3a5080 100%)`,
           color: "#fff",
-          position: "relative",
-          overflow: "hidden",
         }}
       >
-        <Box
-          sx={{
-            position: "absolute", inset: 0, opacity: 0.06,
-            backgroundImage: "radial-gradient(circle at 20% 50%, #00B6AD 0%, transparent 60%)",
-          }}
-        />
-        <Stack direction="row" justifyContent="center" alignItems="center" spacing={1.5} mb={1}>
-          <StorefrontIcon sx={{ fontSize: 34, color: PRIMARY }} />
-          <Typography variant="h3" fontWeight={800}>
-            Our Products
-          </Typography>
-        </Stack>
-        <Typography sx={{ opacity: 0.7, maxWidth: 520, mx: "auto" }}>
-          Premium beauty products — crafted for real results.
+        <Typography variant="h3" fontWeight={800} mb={1}>
+          Our Products
         </Typography>
-        <Chip
-          label={`${allProducts.length} items`}
-          sx={{ mt: 2, bgcolor: PRIMARY, color: "#fff", fontWeight: 600 }}
-        />
+        <Typography variant="body1" sx={{ opacity: 0.8, maxWidth: 520, mx: "auto" }}>
+          Premium beauty products carefully selected for every hair type and skin tone.
+        </Typography>
       </Box>
 
       <Container maxWidth="lg" sx={{ py: 6 }}>
-        {loading ? (
-          <Box textAlign="center" py={10}>
-            <CircularProgress sx={{ color: PRIMARY }} />
+        {/* ── Category Filter Pills ── */}
+        {availableCategories.length > 1 && (
+          <Box
+            sx={{
+              display: "flex", gap: 1.5, flexWrap: "wrap",
+              justifyContent: "center", mb: 5,
+            }}
+          >
+            <Chip
+              label={`All (${products.length})`}
+              onClick={() => setActiveCat("all")}
+              sx={{
+                fontWeight: 700, fontSize: "0.82rem",
+                bgcolor: activecat === "all" ? darkTextColor : "transparent",
+                color:   activecat === "all" ? "#fff" : "text.secondary",
+                border:  `2px solid ${darkTextColor}`,
+                "&:hover": { bgcolor: darkTextColor, color: "#fff" },
+              }}
+            />
+            {availableCategories.map((key) => {
+              const meta = CATEGORY_META[key];
+              return (
+                <Chip
+                  key={key}
+                  label={`${meta.label} (${grouped[key].length})`}
+                  onClick={() => setActiveCat(key)}
+                  sx={{
+                    fontWeight: 600, fontSize: "0.82rem",
+                    bgcolor: activecat === key ? meta.color : "transparent",
+                    color:   activecat === key ? "#fff"       : "text.secondary",
+                    border:  `2px solid ${meta.color}`,
+                    "&:hover": { bgcolor: meta.color, color: "#fff" },
+                  }}
+                />
+              );
+            })}
           </Box>
-        ) : groups.length === 0 ? (
-          <Typography textAlign="center" color="text.secondary" py={10}>
-            No products available yet.
-          </Typography>
-        ) : (
-          <>
-            {/* ── Category Tabs ────────────────────────────────────── */}
-            <Box sx={{ mb: 5, borderBottom: "2px solid #eee" }}>
-              <Tabs
-                value={activeTab}
-                onChange={(_, v) => setActiveTab(v)}
-                variant="scrollable"
-                scrollButtons="auto"
-                TabIndicatorProps={{ style: { backgroundColor: PRIMARY, height: 3 } }}
-                sx={{ minHeight: 52 }}
-              >
-                {groups.map((grp, idx) => (
-                  <Tab
-                    key={grp.key}
-                    label={
-                      <Box display="flex" alignItems="center" gap={1}>
-                        <Box
-                          sx={{
-                            width: 8, height: 8, borderRadius: "50%",
-                            bgcolor: grp.color, flexShrink: 0,
-                          }}
-                        />
-                        <span>{grp.label}</span>
-                        <Chip
-                          label={grp.items.length}
-                          size="small"
-                          sx={{
-                            height: 20, fontSize: "0.7rem",
-                            bgcolor: activeTab === idx ? grp.color : "#eee",
-                            color:   activeTab === idx ? "#fff" : "text.secondary",
-                          }}
-                        />
-                      </Box>
-                    }
+        )}
+
+        {/* ── Render by section (all view) or flat grid (filtered) ── */}
+        {activecat === "all" ? (
+          availableCategories.map((key) => {
+            const meta = CATEGORY_META[key];
+            return (
+              <Box key={key} mb={8}>
+                {/* Section title */}
+                <Stack direction="row" alignItems="center" spacing={2} mb={3}>
+                  <Box
                     sx={{
-                      textTransform: "none",
-                      fontWeight: activeTab === idx ? 700 : 500,
-                      color: activeTab === idx ? DARK_TEXT : "text.secondary",
-                      minHeight: 52,
+                      width: 5, height: 32, borderRadius: 2,
+                      bgcolor: meta.color,
                     }}
                   />
-                ))}
-              </Tabs>
-            </Box>
-
-            {/* ── Active Category ──────────────────────────────────── */}
-            {activeGroup && (
-              <>
-                <Box mb={4}>
-                  <motion.div
-                    key={activeGroup.key}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.35 }}
+                  <Typography
+                    variant="h5"
+                    fontWeight={800}
+                    sx={{ color: darkTextColor }}
                   >
-                    <Typography variant="h5" fontWeight={700} color={DARK_TEXT}>
-                      {activeGroup.label}
-                    </Typography>
-                    <Box
-                      sx={{
-                        width: 40, height: 3,
-                        bgcolor: activeGroup.color,
-                        mt: 1, mb: 0.5,
-                      }}
-                    />
-                    <Typography variant="body2" color="text.secondary">
-                      {activeGroup.description}
-                    </Typography>
-                  </motion.div>
-                </Box>
+                    {meta.label}
+                  </Typography>
+                  <Chip
+                    label={`${grouped[key].length} item${grouped[key].length !== 1 ? "s" : ""}`}
+                    size="small"
+                    sx={{ bgcolor: meta.color, color: "#fff", fontWeight: 600 }}
+                  />
+                </Stack>
 
-                <motion.div
-                  key={`grid-${activeGroup.key}`}
-                  variants={stagger}
-                  initial="hidden"
-                  animate="show"
-                >
-                  <Grid container spacing={3}>
-                    {activeGroup.items.map((p) => (
-                      <Grid item xs={12} sm={6} md={4} key={p._id}>
-                        <motion.div variants={itemVariants}>
-                          <Card
-                            sx={{
-                              borderRadius: 3,
-                              boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
-                              overflow: "hidden",
-                              height: "100%",
-                              display: "flex",
-                              flexDirection: "column",
-                              transition: "transform 0.25s ease, box-shadow 0.25s ease",
-                              "&:hover": {
-                                transform: "translateY(-6px)",
-                                boxShadow: "0 10px 28px rgba(0,0,0,0.13)",
-                              },
-                            }}
-                          >
-                            <Box sx={{ position: "relative", overflow: "hidden" }}>
-                              <CardMedia
-                                component="img"
-                                height="260"
-                                image={
-                                  p.image.startsWith("http")
-                                    ? p.image
-                                    : `${
-                                        process.env.NODE_ENV === "development"
-                                          ? "http://localhost:5000"
-                                          : process.env.REACT_APP_API_URL
-                                      }${p.image}`
-                                }
-                                alt={p.name}
-                                sx={{
-                                  objectFit: "cover",
-                                  transition: "transform 0.4s ease",
-                                  "&:hover": { transform: "scale(1.05)" },
-                                }}
-                              />
-                              <Chip
-                                label={activeGroup.label}
-                                size="small"
-                                sx={{
-                                  position: "absolute", top: 10, left: 10,
-                                  bgcolor: activeGroup.color, color: "#fff",
-                                  fontWeight: 600, fontSize: "0.68rem",
-                                }}
-                              />
-                            </Box>
+                <Grid container spacing={3}>
+                  {grouped[key].map((p) => (
+                    <ProductCard key={p._id} product={p} meta={meta} addToCart={addToCart} />
+                  ))}
+                </Grid>
+              </Box>
+            );
+          })
+        ) : (
+          <Grid container spacing={3}>
+            {displayProducts.map((p) => {
+              const meta = CATEGORY_META[p.category || "other"];
+              return (
+                <ProductCard key={p._id} product={p} meta={meta} addToCart={addToCart} />
+              );
+            })}
+          </Grid>
+        )}
 
-                            <CardContent
-                              sx={{ flexGrow: 1, display: "flex", flexDirection: "column", p: 2.5 }}
-                            >
-                              <Typography
-                                fontWeight={700}
-                                fontSize="1rem"
-                                color={DARK_TEXT}
-                                noWrap
-                                title={p.name}
-                                mb={0.5}
-                              >
-                                {p.name}
-                              </Typography>
-                              <Typography
-                                variant="h6"
-                                sx={{ color: PRIMARY, fontWeight: 800, mb: "auto" }}
-                              >
-                                ₵{Number(p.price).toFixed(2)}
-                              </Typography>
-
-                              <Button
-                                fullWidth
-                                variant="contained"
-                                startIcon={<ShoppingCartIcon />}
-                                onClick={() => addToCart(p)}
-                                sx={{
-                                  mt: 2,
-                                  bgcolor: PRIMARY,
-                                  borderRadius: "999px",
-                                  fontWeight: 600,
-                                  textTransform: "none",
-                                  "&:hover": { bgcolor: "#009688" },
-                                }}
-                              >
-                                Add to Cart
-                              </Button>
-                            </CardContent>
-                          </Card>
-                        </motion.div>
-                      </Grid>
-                    ))}
-                  </Grid>
-                </motion.div>
-              </>
-            )}
-          </>
+        {products.length === 0 && (
+          <Box textAlign="center" py={10}>
+            <Typography color="text.secondary" variant="h6">
+              No products available yet.
+            </Typography>
+          </Box>
         )}
       </Container>
     </Box>
+  );
+}
+
+function ProductCard({ product: p, meta, addToCart }) {
+  return (
+    <Grid item xs={12} sm={6} md={4} lg={3}>
+      <Card
+        sx={{
+          borderRadius: 3, height: "100%",
+          display: "flex", flexDirection: "column",
+          boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
+          overflow: "hidden",
+          transition: "transform 0.25s ease, box-shadow 0.25s ease",
+          "&:hover": {
+            transform: "translateY(-6px)",
+            boxShadow: "0 10px 28px rgba(0,0,0,0.14)",
+          },
+        }}
+      >
+        {/* Image + badge */}
+        <Box sx={{ position: "relative" }}>
+          <CardMedia
+            component="img"
+            height="240"
+            image={`${API_BASE}${p.image}`}
+            alt={p.name}
+            sx={{ objectFit: "cover" }}
+          />
+          <Chip
+            label={meta.label}
+            size="small"
+            sx={{
+              position: "absolute", top: 10, left: 10,
+              bgcolor: meta.color, color: "#fff",
+              fontWeight: 700, fontSize: "0.68rem",
+            }}
+          />
+        </Box>
+
+        <CardContent
+          sx={{
+            flexGrow: 1, display: "flex",
+            flexDirection: "column", gap: 0.5, p: 2,
+          }}
+        >
+          <Typography
+            fontWeight={700}
+            sx={{ color: "#2C3E64", fontSize: "0.95rem" }}
+            noWrap
+            title={p.name}
+          >
+            {p.name}
+          </Typography>
+
+          <Typography
+            variant="h6"
+            sx={{ color: "#00B6AD", fontWeight: 800, mb: "auto" }}
+          >
+            ₵{Number(p.price).toFixed(2)}
+          </Typography>
+
+          <Button
+            fullWidth
+            variant="contained"
+            startIcon={<ShoppingCartOutlinedIcon />}
+            onClick={() => addToCart(p)}
+            sx={{
+              mt: 1.5,
+              bgcolor: "#00B6AD",
+              borderRadius: "999px",
+              fontWeight: 700,
+              "&:hover": { bgcolor: "#009688" },
+            }}
+          >
+            Add to Cart
+          </Button>
+        </CardContent>
+      </Card>
+    </Grid>
   );
 }
