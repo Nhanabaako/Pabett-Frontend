@@ -16,7 +16,7 @@ import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 const API_URL =
   process.env.NODE_ENV === "development"
     ? "http://localhost:5000"
-    : process.env.REACT_APP_API_URL;
+    : process.env.REACT_APP_API_URL || "https://pabett.onrender.com";
 
 const THEME = {
   primary:  "#00B6AD",

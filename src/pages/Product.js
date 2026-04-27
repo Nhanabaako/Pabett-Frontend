@@ -27,7 +27,7 @@ const darkTextColor = "#2C3E64";
 const API_BASE =
   process.env.NODE_ENV === "development"
     ? "http://localhost:5000"
-    : process.env.REACT_APP_API_URL || "";
+    : process.env.REACT_APP_API_URL || "https://pabett.onrender.com";
 
 export default function Products() {
   const [products,   setProducts]   = useState([]);

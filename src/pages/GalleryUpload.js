@@ -16,7 +16,12 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useNavigate } from "react-router-dom";
 
-const API_URL = "http://localhost:5000/api/gallery";
+const API_BASE =
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:5000"
+    : process.env.REACT_APP_API_URL || "https://pabett.onrender.com";
+
+const API_URL = `${API_BASE}/api/gallery`;
 
 export default function GalleryAdmin() {
   const [images, setImages] = useState([]);
@@ -202,7 +207,7 @@ export default function GalleryAdmin() {
                   image={
                     img.url.startsWith("http")
                       ? img.url
-                      : `http://localhost:5000${img.url}`
+                      : `${API_BASE}${img.url}`
                   }
                   alt={img.altText}
                   sx={{
