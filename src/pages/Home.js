@@ -52,28 +52,24 @@ const THEME = {
 const slides = [
   {
     image: 'images/caro-services/Caro1.jpg',
-    label: 'Bridal & Makeup',
     title: 'Elevate Your Look, Effortlessly',
     subtitle: 'Expert styling for natural radiance and glamour.',
     cta: 'Book Consultation',
   },
   {
     image: 'images/caro-services/Caro2.jpg',
-    label: 'Hair Styling',
     title: 'Personalized Glamour for Every Event',
     subtitle: 'Bespoke makeup and hair services tailored to your occasion.',
     cta: 'Explore Services',
   },
   {
     image: 'images/caro-services/Caro4.jpg',
-    label: 'Wig Units',
     title: 'Luxury Beauty Experience',
     subtitle: 'Book your appointment for exceptional, professional care.',
     cta: 'Reserve Your Slot',
   },
   {
     image: 'images/Pabett oil Flier.png',
-    label: 'Hair Growth Oil',
     title: 'PABETT Hair Growth Oil',
     subtitle: 'Nourish. Strengthen. Grow. Shop our signature hair oil.',
     cta: 'Shop Now',
@@ -99,7 +95,7 @@ const SERVICES_DATA = [
   },
   {
     title: 'Wig Units & Customization',
-    image: 'images/Caps/cap8.jpg',
+    image: 'images/Caps/cap1.jpg',
     description: 'Custom unit construction, installation and precise styling for a natural look.',
     link: '/services#wigs',
     icon: <SpaIcon />,
@@ -176,14 +172,7 @@ const Hero = () => (
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8 }}
               >
-                <Chip
-                  label={s.label}
-                  size="small"
-                  sx={{
-                    mb: 2, bgcolor: THEME.primary, color: '#fff',
-                    fontWeight: 700, letterSpacing: 1, fontSize: '0.72rem',
-                  }}
-                />
+            
                 <Typography
                   sx={{
                     color: '#fff', fontWeight: 800,
@@ -242,29 +231,6 @@ const Hero = () => (
         </SwiperSlide>
       ))}
     </Swiper>
-
-    {/* Scroll cue */}
-    <Box
-      sx={{
-        position: 'absolute', bottom: 28, left: '50%',
-        transform: 'translateX(-50%)', zIndex: 10,
-        display: { xs: 'none', md: 'block' },
-      }}
-    >
-      <motion.div
-        animate={{ y: [0, 10, 0] }}
-        transition={{ repeat: Infinity, duration: 1.6, ease: 'easeInOut' }}
-      >
-        <Box
-          sx={{
-            width: 28, height: 44, border: '2px solid rgba(255,255,255,0.55)',
-            borderRadius: '999px', display: 'flex', justifyContent: 'center', pt: 1,
-          }}
-        >
-          <Box sx={{ width: 4, height: 8, bgcolor: '#fff', borderRadius: '999px' }} />
-        </Box>
-      </motion.div>
-    </Box>
   </Box>
 );
 
@@ -317,65 +283,98 @@ const ServiceCard = ({ item, index }) => (
   >
     <Card
       sx={{
-        borderRadius: 4, overflow: 'hidden',
+        borderRadius: 4,
+        overflow: 'hidden',
         boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
         transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-        '&:hover': { transform: 'translateY(-8px)', boxShadow: '0 16px 40px rgba(0,0,0,0.14)' },
-        height: '100%', display: 'flex', flexDirection: 'column',
-        position: 'relative',
+        '&:hover': {
+          transform: 'translateY(-8px)',
+          boxShadow: '0 16px 40px rgba(0,0,0,0.14)',
+        },
+        width: '100%',
+        maxWidth: 320, // 🔥 controls overall size
+        margin: '0 auto',
       }}
     >
-      {item.badge && (
+      {/* {item.badge && (
         <Chip
           label={item.badge}
           size="small"
           sx={{
-            position: 'absolute', top: 14, right: 14, zIndex: 2,
-            bgcolor: THEME.secondary, color: '#fff',
-            fontWeight: 700, fontSize: '0.7rem',
+            position: 'absolute',
+            top: 14,
+            right: 14,
+            zIndex: 2,
+            bgcolor: THEME.secondary,
+            color: '#fff',
+            fontWeight: 700,
+            fontSize: '0.7rem',
           }}
         />
-      )}
-      <Box sx={{ position: 'relative', overflow: 'hidden' }}>
+      )} */}
+
+      {/* IMAGE SECTION */}
+      <Box sx={{ position: 'relative' }}>
         <CardMedia
           component="img"
           image={item.image}
           alt={item.title}
           sx={{
-            height: { xs: 200, md: 230 }, objectFit: 'cover',
-            transition: 'transform 0.5s ease',
-            '&:hover': { transform: 'scale(1.06)' },
+            width: '100%',
+            height: 'auto', // ✅ key fix
+            objectFit: 'cover',
+            display: 'block',
           }}
         />
+
         <Box
           sx={{
-            position: 'absolute', inset: 0,
-            background: 'linear-gradient(to top, rgba(44,62,100,0.55) 0%, transparent 60%)',
+            position: 'absolute',
+            inset: 0,
+            background:
+              'linear-gradient(to top, rgba(44,62,100,0.55) 0%, transparent 60%)',
           }}
         />
       </Box>
-      <CardContent sx={{ flexGrow: 1, p: 3 }}>
+
+      {/* CONTENT */}
+      <CardContent sx={{ p: 2 }}>
         <Stack direction="row" spacing={1} alignItems="center" mb={1}>
           <Box
             sx={{
-              bgcolor: `${THEME.primary}15`, p: 0.8, borderRadius: '50%',
-              color: THEME.primary, display: 'flex',
+              bgcolor: `${THEME.primary}15`,
+              p: 0.8,
+              borderRadius: '50%',
+              color: THEME.primary,
+              display: 'flex',
             }}
           >
             {item.icon}
           </Box>
-          <Typography variant="h6" fontWeight={700} color={THEME.darkText}>
+
+          <Typography variant="subtitle1" fontWeight={700}>
             {item.title}
           </Typography>
         </Stack>
-        <Typography color="text.secondary" variant="body2" sx={{ lineHeight: 1.7, mb: 2 }}>
+
+        <Typography
+          color="text.secondary"
+          variant="body2"
+          sx={{ lineHeight: 1.6, mb: 1.5 }}
+        >
           {item.description}
         </Typography>
+
         <Button
           href={item.link}
           size="small"
           endIcon={<ArrowForwardIcon sx={{ fontSize: 16 }} />}
-          sx={{ color: THEME.primary, fontWeight: 700, p: 0, '&:hover': { bgcolor: 'transparent', opacity: 0.75 } }}
+          sx={{
+            color: THEME.primary,
+            fontWeight: 700,
+            p: 0,
+            '&:hover': { bgcolor: 'transparent', opacity: 0.75 },
+          }}
         >
           Learn More
         </Button>
@@ -393,45 +392,105 @@ const WhyUs = () => {
     { icon: '📅', title: 'Easy Booking',      desc: 'Simple online booking with 24-hour confirmation.' },
   ];
   return (
-    <Box sx={{ py: { xs: 7, md: 11 }, bgcolor: '#fff' }}>
-      <Container maxWidth="lg">
-        <Box textAlign="center" mb={6}>
-          <Chip label="WHY CHOOSE US" sx={{ bgcolor: `${THEME.primary}15`, color: THEME.primary, fontWeight: 700, mb: 1.5 }} />
-          <Typography variant="h4" fontWeight={800} color={THEME.darkText}>
-            The Pabett Difference
-          </Typography>
-          <Typography color="text.secondary" sx={{ mt: 1.5, maxWidth: 520, mx: 'auto' }}>
-            We don't just do beauty — we create experiences that leave you glowing inside and out.
-          </Typography>
-        </Box>
-        <Grid container spacing={3}>
-          {reasons.map((r, i) => (
-            <Grid item xs={12} sm={6} md={3} key={i}>
-              <motion.div
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-              >
-                <Paper
-                  sx={{
-                    p: 3.5, borderRadius: 4, textAlign: 'center', height: '100%',
-                    border: '1px solid #edf2f7',
-                    boxShadow: '0 2px 12px rgba(0,0,0,0.04)',
-                    transition: 'box-shadow 0.3s, transform 0.3s',
-                    '&:hover': { boxShadow: '0 8px 32px rgba(0,182,173,0.12)', transform: 'translateY(-4px)' },
-                  }}
-                >
-                  <Box sx={{ fontSize: '2.2rem', mb: 1.5 }}>{r.icon}</Box>
-                  <Typography fontWeight={700} color={THEME.darkText} gutterBottom>{r.title}</Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.7 }}>{r.desc}</Typography>
-                </Paper>
-              </motion.div>
-            </Grid>
-          ))}
-        </Grid>
-      </Container>
+<Box sx={{ py: { xs: 7, md: 11 }, bgcolor: '#fff' }}>
+  <Container maxWidth="lg"> {/* 🔥 wider container */}
+
+    {/* HEADER */}
+    <Box textAlign="center" mb={6}>
+      <Chip
+        label="WHY CHOOSE US"
+        sx={{
+          bgcolor: `${THEME.primary}15`,
+          color: THEME.primary,
+          fontWeight: 700,
+          mb: 1.5,
+        }}
+      />
+      <Typography variant="h4" fontWeight={800} color={THEME.darkText}>
+        The Pabett Difference
+      </Typography>
+      <Typography
+        color="text.secondary"
+        sx={{ mt: 1.5, maxWidth: 520, mx: 'auto' }}
+      >
+        We don't just do beauty — we create experiences that leave you glowing inside and out.
+      </Typography>
     </Box>
+
+    {/* GRID */}
+    <Grid
+      container
+      spacing={3}
+      justifyContent="center"
+      alignItems="stretch"
+    >
+      {reasons.map((r, i) => (
+        <Grid
+          item
+          xs={12}
+          sm={6}
+          md={3} // 🔥 4 cards in one row
+          key={i}
+          display="flex"
+          justifyContent="center"
+        >
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: i * 0.1 }}
+            style={{ width: '100%', display: 'flex', justifyContent: 'center' }}
+          >
+            <Paper
+              sx={{
+                width: '100%',
+                maxWidth: 260, // 🔥 prevents stretching but allows fit
+
+                minHeight: 220,
+                p: 3.5,
+                borderRadius: 4,
+                textAlign: 'center',
+
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+
+                border: '1px solid #edf2f7',
+                boxShadow: '0 2px 12px rgba(0,0,0,0.04)',
+                transition: 'box-shadow 0.3s, transform 0.3s',
+                '&:hover': {
+                  boxShadow: '0 8px 32px rgba(0,182,173,0.12)',
+                  transform: 'translateY(-4px)',
+                },
+              }}
+            >
+              <Box sx={{ fontSize: '2.2rem', mb: 1.5 }}>
+                {r.icon}
+              </Box>
+
+              <Typography
+                fontWeight={700}
+                color={THEME.darkText}
+                gutterBottom
+              >
+                {r.title}
+              </Typography>
+
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ lineHeight: 1.7 }}
+              >
+                {r.desc}
+              </Typography>
+            </Paper>
+          </motion.div>
+        </Grid>
+      ))}
+    </Grid>
+  </Container>
+</Box>
   );
 };
 
@@ -588,21 +647,6 @@ const BookingForm = () => {
                 </Stack>
               ))}
               <Divider sx={{ borderColor: 'rgba(255,255,255,0.25)', my: 3 }} />
-              <Button
-                href="https://wa.me/233571901526"
-                target="_blank"
-                rel="noopener noreferrer"
-                startIcon={<WhatsAppIcon />}
-                fullWidth
-                variant="outlined"
-                sx={{
-                  color: '#fff', borderColor: 'rgba(255,255,255,0.6)',
-                  borderRadius: '999px', fontWeight: 600,
-                  '&:hover': { bgcolor: 'rgba(255,255,255,0.12)' },
-                }}
-              >
-                Chat on WhatsApp
-              </Button>
             </Box>
           </Grid>
 
