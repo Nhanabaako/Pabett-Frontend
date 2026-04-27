@@ -22,8 +22,6 @@ import {
   StarRounded as StarIcon,
   ContentCut as ScissorsIcon,
   AutoAwesome as GlamourIcon,
-  Instagram as InstagramIcon,
-  Facebook as FacebookIcon,
 } from '@mui/icons-material';
 import Swal from 'sweetalert2';
 import { Swiper, SwiperSlide } from 'swiper/react';
