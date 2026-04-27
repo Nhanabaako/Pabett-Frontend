@@ -27,7 +27,7 @@ const socialVariants = {
 };
 
 export default function Footer({
-  companyName = "PABETT Beauty",
+  companyName = "",
   tagline     = "Elevating natural beauty with expert care.",
   services    = [
     "Hair Growth Treatment",
