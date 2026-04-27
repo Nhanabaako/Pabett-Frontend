@@ -620,35 +620,7 @@ const BookingForm = () => {
 
         <Grid container spacing={{ xs: 0, md: 4 }} alignItems="flex-start">
           {/* ── Left info panel (desktop only) ── */}
-          <Grid item xs={12} md={4} sx={{ display: { xs: 'none', md: 'block' } }}>
-            <Box
-              sx={{
-                background: THEME.gradient,
-                borderRadius: 4, p: 4, color: '#fff',
-                position: 'sticky', top: 100,
-                boxShadow: '0 12px 40px rgba(0,182,173,0.25)',
-              }}
-            >
-              <Typography variant="h5" fontWeight={800} mb={1}>Why Book With Us?</Typography>
-              <Typography variant="body2" sx={{ opacity: 0.85, mb: 3, lineHeight: 1.7 }}>
-                Experience beauty services tailored to you, delivered by certified professionals.
-              </Typography>
-              <Divider sx={{ borderColor: 'rgba(255,255,255,0.25)', mb: 3 }} />
-              {[
-                { icon: '⚡', text: '24-hr confirmation' },
-                { icon: '💬', text: 'WhatsApp support' },
-                { icon: '📍', text: 'In-studio or mobile' },
-                { icon: '✅', text: 'Free consultation' },
-                { icon: '🌟', text: '500+ happy clients' },
-              ].map((item, i) => (
-                <Stack key={i} direction="row" spacing={1.5} alignItems="center" mb={1.8}>
-                  <Box sx={{ fontSize: '1.2rem' }}>{item.icon}</Box>
-                  <Typography variant="body2" sx={{ opacity: 0.92, fontWeight: 500 }}>{item.text}</Typography>
-                </Stack>
-              ))}
-              <Divider sx={{ borderColor: 'rgba(255,255,255,0.25)', my: 3 }} />
-            </Box>
-          </Grid>
+        
 
           {/* ── Right: form card ── */}
           <Grid item xs={12} md={8}>
@@ -992,6 +964,37 @@ const BookingForm = () => {
               </Box>
             </Paper>
           </Grid>
+
+  <Grid item xs={12} md={4} sx={{ display: { xs: 'none', md: 'block' } }}>
+            <Box
+              sx={{
+                background: THEME.gradient,
+                borderRadius: 4, p: 4, color: '#fff',
+                position: 'sticky', top: 100,
+                boxShadow: '0 12px 40px rgba(0,182,173,0.25)',
+              }}
+            >
+              <Typography variant="h5" fontWeight={800} mb={1}>Why Book With Us?</Typography>
+              <Typography variant="body2" sx={{ opacity: 0.85, mb: 3, lineHeight: 1.7 }}>
+                Experience beauty services tailored to you, delivered by certified professionals.
+              </Typography>
+              <Divider sx={{ borderColor: 'rgba(255,255,255,0.25)', mb: 3 }} />
+              {[
+                { icon: '⚡', text: '24-hr confirmation' },
+                { icon: '💬', text: 'WhatsApp support' },
+                { icon: '📍', text: 'In-studio or mobile' },
+                { icon: '✅', text: 'Free consultation' },
+                { icon: '🌟', text: '500+ happy clients' },
+              ].map((item, i) => (
+                <Stack key={i} direction="row" spacing={1.5} alignItems="center" mb={1.8}>
+                  <Box sx={{ fontSize: '1.2rem' }}>{item.icon}</Box>
+                  <Typography variant="body2" sx={{ opacity: 0.92, fontWeight: 500 }}>{item.text}</Typography>
+                </Stack>
+              ))}
+              <Divider sx={{ borderColor: 'rgba(255,255,255,0.25)', my: 3 }} />
+            </Box>
+          </Grid>
+
         </Grid>
       </Container>
     </Box>
@@ -1042,75 +1045,8 @@ export default function Home() {
       </Box>
 
       {/* Booking */}
-      <BookingForm />
+      <BookingForm /> 
 
-      {/* Footer */}
-      <Box
-        component="footer"
-        sx={{
-          py: { xs: 5, md: 7 },
-          background: THEME.gradientWarm,
-          color: '#fff',
-        }}
-      >
-        <Container maxWidth="lg">
-          <Grid container spacing={4} alignItems="center">
-            <Grid item xs={12} md={4} textAlign={{ xs: 'center', md: 'left' }}>
-              <Typography variant="h5" fontWeight={800} mb={0.5}>Pabett Beauty</Typography>
-              <Typography variant="body2" sx={{ opacity: 0.6, maxWidth: 260 }}>
-                Professional beauty services in Accra. Bridal, makeup, hair & more.
-              </Typography>
-            </Grid>
-            <Grid item xs={12} md={4} textAlign="center">
-              <Typography variant="body2" sx={{ opacity: 0.55 }}>
-                Mon – Sat &nbsp;·&nbsp; 9:00 AM – 6:00 PM
-              </Typography>
-              <Typography variant="body2" sx={{ opacity: 0.55, mt: 0.5 }}>
-                Dansoman, Accra, Ghana
-              </Typography>
-            </Grid>
-            <Grid item xs={12} md={4} textAlign={{ xs: 'center', md: 'right' }}>
-              <Stack direction="row" spacing={1.5} justifyContent={{ xs: 'center', md: 'flex-end' }}>
-                <Button
-                  href="https://wa.me/233571901526"
-                  startIcon={<WhatsAppIcon />}
-                  variant="outlined"
-                  size="small"
-                  sx={{ color: '#fff', borderColor: 'rgba(255,255,255,0.4)', borderRadius: '999px', '&:hover': { borderColor: '#fff' } }}
-                >
-                  WhatsApp
-                </Button>
-                <Button
-                  href="https://www.instagram.com/pabett"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  startIcon={<InstagramIcon />}
-                  variant="outlined"
-                  size="small"
-                  sx={{ color: '#fff', borderColor: 'rgba(255,255,255,0.4)', borderRadius: '999px', '&:hover': { borderColor: '#fff' } }}
-                >
-                  Instagram
-                </Button>
-                <Button
-                  href="https://www.facebook.com/pabett"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  startIcon={<FacebookIcon />}
-                  variant="outlined"
-                  size="small"
-                  sx={{ color: '#fff', borderColor: 'rgba(255,255,255,0.4)', borderRadius: '999px', '&:hover': { borderColor: '#fff' } }}
-                >
-                  Facebook
-                </Button>
-              </Stack>
-            </Grid>
-          </Grid>
-          <Divider sx={{ borderColor: 'rgba(255,255,255,0.12)', my: 3 }} />
-          <Typography variant="body2" textAlign="center" sx={{ opacity: 0.45 }}>
-            © {new Date().getFullYear()} Pabett Beauty. All rights reserved.
-          </Typography>
-        </Container>
-      </Box>
     </Box>
   );
 }

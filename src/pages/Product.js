@@ -1,38 +1,40 @@
+// src/pages/Product.js  (public-facing products page)
 import React, { useEffect, useState } from "react";
 import { apiFetch } from "../api/api";
 import { useCart } from "../context/CartContext";
 import {
   Box, Grid, Card, CardMedia, CardContent,
   Typography, Button, Container, Chip,
-  CircularProgress, Stack,
+  CircularProgress, Stack, Collapse, IconButton,
 } from "@mui/material";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
+import ExpandMoreIcon           from "@mui/icons-material/ExpandMore";
+import ExpandLessIcon           from "@mui/icons-material/ExpandLess";
 
 // ── Must mirror PRODUCT_CATEGORIES in ProductsAdmin.js ──────────────
 const CATEGORY_META = {
-  hair_oil:    { label: "Hair Growth Oil",  color: "#4caf50" },
-  hair_care:   { label: "Hair Care",        color: "#2196f3" },
-  skincare:    { label: "Skincare",         color: "#e91e63" },
-  accessories: { label: "Accessories",      color: "#ff9800" },
-  tools:       { label: "Styling Tools",    color: "#9c27b0" },
-  other:       { label: "Other",            color: "#607d8b" },
+  hair_oil:    { label: "Hair Growth Oil",                   color: "#4caf50" },
+  hair_care:   { label: "Hair Care",                         color: "#2196f3" },
+  hair_sales:  { label: "Hair Sales (Wigs, Weaves & Curls)", color: "#00B6AD" },
+  skincare:    { label: "Skincare Products",                 color: "#e91e63" },
+  makeup:      { label: "Hair & Makeup Products",            color: "#ff5722" },
+  accessories: { label: "Accessories",                       color: "#ff9800" },
+  tools:       { label: "Styling Tools",                     color: "#9c27b0" },
+  other:       { label: "Other",                             color: "#607d8b" },
 };
 
-// Display order
-const CATEGORY_ORDER = ["hair_oil", "hair_care", "skincare", "accessories", "tools", "other"];
+const CATEGORY_ORDER = [
+  "hair_oil", "hair_care", "hair_sales",
+  "skincare", "makeup", "accessories", "tools", "other",
+];
 
 const primaryColor  = "#00B6AD";
 const darkTextColor = "#2C3E64";
 
-const API_BASE =
-  process.env.NODE_ENV === "development"
-    ? "http://localhost:5000"
-    : process.env.REACT_APP_API_URL || "https://pabett.onrender.com";
-
 export default function Products() {
-  const [products,   setProducts]   = useState([]);
-  const [loading,    setLoading]    = useState(true);
-  const [activecat,  setActiveCat]  = useState("all");
+  const [products,  setProducts]  = useState([]);
+  const [loading,   setLoading]   = useState(true);
+  const [activeCat, setActiveCat] = useState("all");
   const { addToCart } = useCart();
 
   useEffect(() => {
@@ -41,19 +43,18 @@ export default function Products() {
       .catch((err)  => { console.error(err); setLoading(false); });
   }, []);
 
-  // Build grouped sections in order, only non-empty ones
   const grouped = CATEGORY_ORDER.reduce((acc, key) => {
     const items = products.filter((p) => (p.category || "other") === key);
     if (items.length > 0) acc[key] = items;
     return acc;
   }, {});
 
-  const displayProducts =
-    activecat === "all"
-      ? products
-      : products.filter((p) => (p.category || "other") === activecat);
-
   const availableCategories = CATEGORY_ORDER.filter((k) => grouped[k]);
+
+  const displayProducts =
+    activeCat === "all"
+      ? products
+      : products.filter((p) => (p.category || "other") === activeCat);
 
   if (loading) {
     return (
@@ -84,19 +85,14 @@ export default function Products() {
       <Container maxWidth="lg" sx={{ py: 6 }}>
         {/* ── Category Filter Pills ── */}
         {availableCategories.length > 1 && (
-          <Box
-            sx={{
-              display: "flex", gap: 1.5, flexWrap: "wrap",
-              justifyContent: "center", mb: 5,
-            }}
-          >
+          <Box sx={{ display: "flex", gap: 1.5, flexWrap: "wrap", justifyContent: "center", mb: 5 }}>
             <Chip
               label={`All (${products.length})`}
               onClick={() => setActiveCat("all")}
               sx={{
                 fontWeight: 700, fontSize: "0.82rem",
-                bgcolor: activecat === "all" ? darkTextColor : "transparent",
-                color:   activecat === "all" ? "#fff" : "text.secondary",
+                bgcolor: activeCat === "all" ? darkTextColor : "transparent",
+                color:   activeCat === "all" ? "#fff" : "text.secondary",
                 border:  `2px solid ${darkTextColor}`,
                 "&:hover": { bgcolor: darkTextColor, color: "#fff" },
               }}
@@ -110,8 +106,8 @@ export default function Products() {
                   onClick={() => setActiveCat(key)}
                   sx={{
                     fontWeight: 600, fontSize: "0.82rem",
-                    bgcolor: activecat === key ? meta.color : "transparent",
-                    color:   activecat === key ? "#fff"       : "text.secondary",
+                    bgcolor: activeCat === key ? meta.color : "transparent",
+                    color:   activeCat === key ? "#fff" : "text.secondary",
                     border:  `2px solid ${meta.color}`,
                     "&:hover": { bgcolor: meta.color, color: "#fff" },
                   }}
@@ -121,25 +117,15 @@ export default function Products() {
           </Box>
         )}
 
-        {/* ── Render by section (all view) or flat grid (filtered) ── */}
-        {activecat === "all" ? (
+        {/* ── Render by section (all) or flat grid (filtered) ── */}
+        {activeCat === "all" ? (
           availableCategories.map((key) => {
             const meta = CATEGORY_META[key];
             return (
               <Box key={key} mb={8}>
-                {/* Section title */}
                 <Stack direction="row" alignItems="center" spacing={2} mb={3}>
-                  <Box
-                    sx={{
-                      width: 5, height: 32, borderRadius: 2,
-                      bgcolor: meta.color,
-                    }}
-                  />
-                  <Typography
-                    variant="h5"
-                    fontWeight={800}
-                    sx={{ color: darkTextColor }}
-                  >
+                  <Box sx={{ width: 5, height: 32, borderRadius: 2, bgcolor: meta.color }} />
+                  <Typography variant="h5" fontWeight={800} sx={{ color: darkTextColor }}>
                     {meta.label}
                   </Typography>
                   <Chip
@@ -148,7 +134,6 @@ export default function Products() {
                     sx={{ bgcolor: meta.color, color: "#fff", fontWeight: 600 }}
                   />
                 </Stack>
-
                 <Grid container spacing={3}>
                   {grouped[key].map((p) => (
                     <ProductCard key={p._id} product={p} meta={meta} addToCart={addToCart} />
@@ -161,9 +146,7 @@ export default function Products() {
           <Grid container spacing={3}>
             {displayProducts.map((p) => {
               const meta = CATEGORY_META[p.category || "other"];
-              return (
-                <ProductCard key={p._id} product={p} meta={meta} addToCart={addToCart} />
-              );
+              return <ProductCard key={p._id} product={p} meta={meta} addToCart={addToCart} />;
             })}
           </Grid>
         )}
@@ -180,7 +163,10 @@ export default function Products() {
   );
 }
 
+// ── Product Card ─────────────────────────────────────────────────────
 function ProductCard({ product: p, meta, addToCart }) {
+  const [descOpen, setDescOpen] = useState(false);
+
   return (
     <Grid item xs={12} sm={6} md={4} lg={3}>
       <Card
@@ -196,12 +182,12 @@ function ProductCard({ product: p, meta, addToCart }) {
           },
         }}
       >
-        {/* Image + badge */}
+        {/* ✅ Image — Cloudinary URL is already absolute, no prefix needed */}
         <Box sx={{ position: "relative" }}>
           <CardMedia
             component="img"
             height="240"
-            image={`${API_BASE}${p.image}`}
+            image={p.image}
             alt={p.name}
             sx={{ objectFit: "cover" }}
           />
@@ -216,27 +202,43 @@ function ProductCard({ product: p, meta, addToCart }) {
           />
         </Box>
 
-        <CardContent
-          sx={{
-            flexGrow: 1, display: "flex",
-            flexDirection: "column", gap: 0.5, p: 2,
-          }}
-        >
+        <CardContent sx={{ flexGrow: 1, display: "flex", flexDirection: "column", gap: 0.5, p: 2 }}>
           <Typography
             fontWeight={700}
             sx={{ color: "#2C3E64", fontSize: "0.95rem" }}
-            noWrap
-            title={p.name}
+            noWrap title={p.name}
           >
             {p.name}
           </Typography>
 
-          <Typography
-            variant="h6"
-            sx={{ color: "#00B6AD", fontWeight: 800, mb: "auto" }}
-          >
+          <Typography variant="h6" sx={{ color: "#00B6AD", fontWeight: 800 }}>
             ₵{Number(p.price).toFixed(2)}
           </Typography>
+
+          {/* ✅ Expandable description */}
+          {p.description && (
+            <Box>
+              <Collapse in={descOpen} collapsedSize={40}>
+                <Typography
+                  variant="caption"
+                  color="text.secondary"
+                  sx={{ lineHeight: 1.5, display: "block" }}
+                >
+                  {p.description}
+                </Typography>
+              </Collapse>
+              <IconButton
+                size="small"
+                onClick={() => setDescOpen((v) => !v)}
+                sx={{ p: 0, mt: 0.5, color: "text.secondary" }}
+              >
+                {descOpen ? <ExpandLessIcon fontSize="small" /> : <ExpandMoreIcon fontSize="small" />}
+                <Typography variant="caption" sx={{ ml: 0.25 }}>
+                  {descOpen ? "Less" : "More info"}
+                </Typography>
+              </IconButton>
+            </Box>
+          )}
 
           <Button
             fullWidth
@@ -244,7 +246,8 @@ function ProductCard({ product: p, meta, addToCart }) {
             startIcon={<ShoppingCartOutlinedIcon />}
             onClick={() => addToCart(p)}
             sx={{
-              mt: 1.5,
+              mt: "auto",
+              pt: 1,
               bgcolor: "#00B6AD",
               borderRadius: "999px",
               fontWeight: 700,

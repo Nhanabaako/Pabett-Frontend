@@ -9,7 +9,10 @@ import {
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import SearchIcon from "@mui/icons-material/Search";
 
-const BASE_URL = "http://localhost:5000";
+const BASE_URL =
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:5000"
+    : process.env.REACT_APP_API_URL || "https://pabett.onrender.com";
 
 // ✅ GALLERY SECTIONS (NOT PRODUCTS)
 const GALLERY_SECTIONS = [

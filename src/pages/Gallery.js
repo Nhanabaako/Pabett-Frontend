@@ -38,7 +38,7 @@ export default function Gallery() {
         const res = await fetch(
           process.env.NODE_ENV === 'development'
             ? 'http://localhost:5000/api/gallery'
-            : `${process.env.REACT_APP_API_URL}/api/gallery`
+            : `${process.env.REACT_APP_API_URL || 'https://pabett.onrender.com'}/api/gallery`
         );
         if (!res.ok) throw new Error('Failed to fetch gallery images');
         const data = await res.json();
@@ -243,7 +243,7 @@ export default function Gallery() {
                                 ? img.url
                                 : `${process.env.NODE_ENV === 'development'
                                     ? 'http://localhost:5000'
-                                    : process.env.REACT_APP_API_URL}${img.url}`
+                                    : process.env.REACT_APP_API_URL || 'https://pabett.onrender.com'}${img.url}`
                             }
                             alt={img.altText || 'Gallery Image'}
                             loading="lazy"

@@ -47,24 +47,24 @@ const MILESTONES = [
 
 const TEAM = [
   {
-    name:   "Patricia A. Bettinson",
+    name:   "Patricia Hemans",
     role:   "Founder & Lead Stylist",
     bio:    "Certified makeup artist & hair specialist with 8+ years transforming Accra's most beautiful moments.",
-    initials: "PB",
+    initials: "PH",
     color:  PRIMARY,
   },
   {
-    name:   "Efua Mensah",
+    name:   "Jessica ",
     role:   "Senior Makeup Artist",
     bio:    "Bridal and editorial specialist known for flawless, long-wear finishes and skin-first techniques.",
-    initials: "EM",
+    initials: "JF",
     color:  "#9c27b0",
   },
   {
-    name:   "Abena Owusu",
+    name:   "Euginia Okwabi",
     role:   "Wig Technician",
     bio:    "Expert in custom wig construction and lace installation. Every unit is a labour of love.",
-    initials: "AO",
+    initials: "EO",
     color:  "#e91e8c",
   },
 ];
@@ -73,7 +73,7 @@ const TEAM = [
 // COMPONENT
 // ─────────────────────────────────────────────────────────────────────────────
 export default function About({
-  title       = "About Us — PABETT Beauty | Accra",
+  title       = "About PABETT Beauty",
   description = "Meet the team behind PABETT Beauty — Accra's trusted destination for professional hair styling, makeup, and hair growth treatments.",
   url         = "https://pabettbeauty.com/about",
   image       = "https://yourdomain.com/images/og-image.jpg",
@@ -172,9 +172,7 @@ export default function About({
             <Grid item xs={12} md={6}>
               <motion.div {...fadeUp(0)}>
                 <Chip label="WHO WE ARE" sx={{ bgcolor: `${PRIMARY}15`, color: PRIMARY, fontWeight: 700, mb: 2 }} />
-                <Typography variant="h3" fontWeight={800} color={DARK_TEXT} sx={{ fontSize: { xs: "1.9rem", md: "2.4rem" }, mb: 2.5 }}>
-                  More Than Beauty — We Create Confidence
-                </Typography>
+             
                 <Typography color="text.secondary" sx={{ lineHeight: 1.9, mb: 2 }}>
                   Founded in 2016 in the heart of Dansoman, Accra, Pabett Beauty started as a one-chair dream
                   and has grown into one of the most trusted beauty destinations in the city. Our founder,
@@ -215,7 +213,7 @@ export default function About({
                 >
                   <Box
                     component="img"
-                    src="images/caro-services/Caro2.jpg"
+                    src="images/Ceo.jpg"
                     alt="Pabett Beauty Team at work"
                     sx={{ width: "100%", display: "block", objectFit: "cover", maxHeight: 480 }}
                   />
