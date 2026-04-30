@@ -50,28 +50,28 @@ const THEME = {
 // ─────────────────────────────────────────────────────────────────────────────
 const slides = [
   {
-    image:    'images/caro-services/Caro1.jpg',
+    image:    '/images/Caro-services/Caro1.jpg',
     badge:    '✨ Expert Styling',
     title:    'Elevate Your Look, Effortlessly',
     subtitle: 'Expert styling for natural radiance and glamour.',
     cta:      'Book Consultation',
   },
   {
-    image:    'images/caro-services/Caro2.jpg',
+    image:    '/images/Caro-services/Caro2.JPG',
     badge:    '💍 Bridal Specialist',
     title:    'Personalized Glamour for Every Event',
     subtitle: 'Bespoke makeup and hair services tailored to your occasion.',
     cta:      'Explore Services',
   },
   {
-    image:    'images/caro-services/Caro4.jpg',
+    image:    '/images/Caro-services/Caro4.jpg',
     badge:    '⭐ Luxury Experience',
     title:    'Luxury Beauty Experience',
     subtitle: 'Book your appointment for exceptional, professional care.',
     cta:      'Reserve Your Slot',
   },
   {
-    image:    'images/Pabett oil Flier.png',
+    image:    '/images/Pabett oil Flier.png',
     badge:    '🌿 Signature Product',
     title:    'PABETT Hair Growth Oil',
     subtitle: 'Nourish. Strengthen. Grow. Shop our signature hair oil.',
@@ -82,7 +82,7 @@ const slides = [
 const SERVICES_DATA = [
   {
     title:       'Bridal & Event Makeup',
-    image:       'images/Caro-services/Makeup-services.jpg',
+    image:       '/images/Caro-services/Makeup-services.jpg',
     description: 'Flawless, long-lasting looks for weddings, photoshoots and special occasions.',
     link:        '/services#makeup',
     icon:        <GlamourIcon />,
@@ -91,7 +91,7 @@ const SERVICES_DATA = [
   },
   {
     title:       'Hair Styling & Treatments',
-    image:       'images/Caro-services/Hair-styling.jpg',
+    image:       '/images/Caro-services/Hair-styling.jpg',
     description: 'From elegant updos to deep conditioning — complete hair transformations.',
     link:        '/services#hair',
     icon:        <ScissorsIcon />,
@@ -100,7 +100,7 @@ const SERVICES_DATA = [
   },
   {
     title:       'Wig Units & Customization',
-    image:       'images/Caps/cap1.jpg',
+    image:       '/images/Caps/cap1.jpg',
     description: 'Custom unit construction, installation and precise styling for a natural look.',
     link:        '/services#wigs',
     icon:        <SpaIcon />,

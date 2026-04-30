@@ -143,7 +143,7 @@ export default function Gallery() {
       >
         <Box
           component="img"
-          src="images/caro-services/Caro2.jpg"
+          src="/images/Caro-services/Caro2.JPG"
           alt="Gallery Hero"
           sx={{
             position: 'absolute', top: 0, left: 0,

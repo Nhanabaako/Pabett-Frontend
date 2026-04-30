@@ -41,7 +41,7 @@ const SERVICES_FALLBACK = [
     title: 'Hair Styling',
     tagline: 'Healthy hair, beautiful you.',
     description: 'Professional hair styling for all occasions — from everyday elegance to show-stopping bridal looks. We care for every texture and length.',
-    image: 'images/Caro-services/Hair-styling.jpg',
+    image: '/images/Caro-services/Hair-styling.jpg',
     icon: <ScissorsIcon />,
     color: '#00B6AD',
     features: ['Bridal hairstyling', 'Evening & party looks', 'Hair extensions', 'Deep conditioning treatments', 'Professional consultations'],
@@ -59,7 +59,7 @@ const SERVICES_FALLBACK = [
     title: 'Wig Units',
     tagline: 'Custom-fitted, flawlessly styled.',
     description: 'Premium wig units and caps crafted to your exact specifications. From lace fronts to full 360 frontals — every unit is a masterpiece.',
-    image: 'images/Caps/cap8.jpg',
+    image: '/images/Caps/cap8.jpg',
     icon: <Layers />,
     color: '#9c27b0',
     features: ['Custom fittings & measurements', 'Premium lace & HD fronts', 'Natural-looking hairlines', '360 frontal installation', 'Post-install maintenance tips'],
@@ -77,7 +77,7 @@ const SERVICES_FALLBACK = [
     title: 'Makeup Services',
     tagline: 'Flawless finish every time.',
     description: 'Expert makeup application using premium, skin-safe products. Whether you\'re walking the aisle or the red carpet, we deliver stunning results.',
-    image: 'images/Caro-services/Makeup-services.jpg',
+    image: '/images/Caro-services/Makeup-services.jpg',
     icon: <GlamourIcon />,
     color: '#e91e8c',
     features: ['Airbrush makeup', 'Full bridal packages', 'Editorial & photoshoot looks', 'Skincare prep & primer', 'Touch-up kits included'],
@@ -220,7 +220,7 @@ export default function ServicesPage() {
       >
         <Box
           component="img"
-          src="images/Caro-services/Hair-styling.jpg"
+          src="/images/Caro-services/Hair-styling.jpg"
           alt="Services Hero"
           sx={{
             position: 'absolute', inset: 0, width: '100%', height: '100%',

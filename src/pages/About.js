@@ -210,7 +210,7 @@ export default function About({
                 >
                   <Box
                     component="img"
-                    src="images/Ceo.jpg"
+                    src="/images/Ceo.jpg"
                     alt="Pabett Beauty Team at work"
                     sx={{ width: "100%", display: "block", objectFit: "cover", maxHeight: 480 }}
                   />
