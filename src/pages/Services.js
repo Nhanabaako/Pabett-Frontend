@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { BASE_URL } from '../api/api';
 import { motion } from 'framer-motion';
 // import { useNavigate } from 'react-router-dom';
 import {
@@ -33,7 +34,7 @@ const stagger = {
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
-const SERVICES = [
+const SERVICES_FALLBACK = [
   {
     id: 1,
     slug: 'hair',
@@ -90,6 +91,7 @@ const SERVICES = [
   },
 ];
 
+// ─────────────────────────────────────────────────────────────────────────────
 const FAQS = [
   {
     q: 'How far in advance should I book?',
@@ -194,9 +196,17 @@ const ServiceCard = ({ service, isActive, onClick }) => (
 // MAIN COMPONENT
 // ─────────────────────────────────────────────────────────────────────────────
 export default function ServicesPage() {
-  // const navigate     = useNavigate();
-  const [activeTab, setActiveTab] = useState(0);
-  const service = SERVICES[activeTab];
+  const [activeTab,  setActiveTab]  = useState(0);
+  const [services,   setServices]   = useState(SERVICES_FALLBACK);
+
+  useEffect(() => {
+    fetch(`${BASE_URL}/api/services`)
+      .then((r) => r.json())
+      .then((data) => { if (Array.isArray(data) && data.length) setServices(data); })
+      .catch(() => {});
+  }, []);
+
+  const service = services[activeTab] || services[0];
 
   return (
     <Box>
@@ -298,7 +308,7 @@ export default function ServicesPage() {
                 '& .Mui-selected': { color: PRIMARY },
               }}
             >
-              {SERVICES.map((s) => (
+              {services.map((s) => (
                 <Tab
                   key={s.id}
                   label={
@@ -439,7 +449,7 @@ export default function ServicesPage() {
           <Divider sx={{ my: 7 }} />
           <motion.div variants={stagger} initial="hidden" whileInView="show" viewport={{ once: true }}>
             <Grid container spacing={3}>
-              {SERVICES.map((s, i) => (
+              {services.map((s, i) => (
                 <Grid item xs={12} sm={6} md={4} key={s.id}>
                   <ServiceCard
                     service={s}

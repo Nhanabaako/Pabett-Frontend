@@ -1,126 +1,185 @@
-import React, { useState } from "react";
-import {
-  Box,
-  Drawer,
-  List,
-  ListItemButton,
-  ListItemText,
-  AppBar,
-  Toolbar,
-  Typography,
-  IconButton,
-  Avatar,
-  Stack
-} from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
-import { useNavigate, useLocation } from "react-router-dom";
+import React, { useState } from 'react';
+import { Box, Drawer, IconButton, Avatar, Typography, Stack, Tooltip, Chip } from '@mui/material';
+import MenuIcon   from '@mui/icons-material/Menu';
+import LogoutIcon from '@mui/icons-material/Logout';
+import ShieldIcon from '@mui/icons-material/Shield';
+import { useNavigate } from 'react-router-dom';
+import Sidebar from '../pages/admin/Sidebar';
 
-const drawerWidth = 240;
-
-const menuItems = [
-  { label: "Dashboard", path: "/admin/dashboard" },
-  { label: "Gallery", path: "/admin/gallery" },
-  { label: "Products", path: "/admin/products" },
-];
+const DRAWER_WIDTH = 240;
 
 export default function AdminLayout({ children }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
 
-  const drawer = (
-    <Box>
-      <Typography variant="h6" sx={{ p: 2, fontWeight: 700 }}>
-        💼 Pabett Admin
-      </Typography>
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('adminKey');
+    localStorage.removeItem('adminRole');
+    navigate('/admin/login', { replace: true });
+  };
 
-      <List>
-        {menuItems.map((item) => (
-          <ListItemButton
-            key={item.path}
-            selected={location.pathname === item.path}
-            onClick={() => navigate(item.path)}
-          >
-            <ListItemText primary={item.label} />
-          </ListItemButton>
-        ))}
-      </List>
-    </Box>
-  );
+  const { adminEmail, adminRole } = (() => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return { adminEmail: 'Admin', adminRole: 'admin' };
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return { adminEmail: payload.email || 'Admin', adminRole: payload.role || 'admin' };
+    } catch {
+      return { adminEmail: 'Admin', adminRole: 'admin' };
+    }
+  })();
+
+  const isSuperAdmin = adminRole === 'superadmin';
+  const initial      = adminEmail[0]?.toUpperCase() || 'A';
 
   return (
-    <Box sx={{ display: "flex" }}>
-      
-      {/* TOP BAR */}
-      <AppBar
-        position="fixed"
-        elevation={0}
+    <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: '#F0F4F3' }}>
+
+      {/* ── Top bar ─────────────────────────────────────────────────────── */}
+      <Box
+        component="header"
         sx={{
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
-          ml: { sm: `${drawerWidth}px` },
-          bgcolor: "#fff",
-          color: "#000",
-          borderBottom: "1px solid #eee"
+          position: 'fixed',
+          top: 0,
+          left: { sm: DRAWER_WIDTH },
+          right: 0,
+          height: 60,
+          bgcolor: '#fff',
+          borderBottom: '1px solid #E2EBE9',
+          zIndex: (t) => t.zIndex.drawer + 1,
+          display: 'flex',
+          alignItems: 'center',
+          px: { xs: 2, sm: 3 },
+          justifyContent: 'space-between',
         }}
       >
-        <Toolbar sx={{ justifyContent: "space-between" }}>
-          <Stack direction="row" alignItems="center" spacing={2}>
-            <IconButton onClick={() => setMobileOpen(!mobileOpen)}>
-              <MenuIcon />
-            </IconButton>
-            <Typography fontWeight={700}>
-              Admin Dashboard
+        <Stack direction="row" alignItems="center" spacing={1}>
+          <IconButton
+            onClick={() => setMobileOpen(!mobileOpen)}
+            sx={{ display: { sm: 'none' }, color: '#1E2D4F' }}
+            size="small"
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography
+            sx={{
+              fontFamily: "'Inter', sans-serif",
+              fontWeight: 700,
+              fontSize: '0.875rem',
+              color: '#1E2D4F',
+              letterSpacing: 0,
+            }}
+          >
+            Pabett Beauty
+          </Typography>
+          <Typography
+            sx={{
+              fontFamily: "'JetBrains Mono', monospace",
+              fontSize: '0.65rem',
+              letterSpacing: '0.12em',
+              textTransform: 'uppercase',
+              color: '#7E8AA8',
+              display: { xs: 'none', sm: 'block' },
+            }}
+          >
+            / Admin
+          </Typography>
+        </Stack>
+
+        <Stack direction="row" spacing={1.5} alignItems="center">
+          <Box sx={{ textAlign: 'right', display: { xs: 'none', sm: 'block' } }}>
+            <Stack direction="row" alignItems="center" spacing={0.75} justifyContent="flex-end">
+              <Typography sx={{ fontSize: '0.8rem', fontWeight: 700, color: '#1E2D4F', lineHeight: 1.2 }}>
+                {adminEmail}
+              </Typography>
+              {isSuperAdmin && (
+                <Chip
+                  icon={<ShieldIcon sx={{ fontSize: '10px !important', color: '#92400E !important' }} />}
+                  label="SA"
+                  size="small"
+                  sx={{ bgcolor: '#FEF3C7', color: '#92400E', fontWeight: 800, fontSize: '0.58rem', height: 18, '& .MuiChip-label': { px: 0.5 } }}
+                />
+              )}
+            </Stack>
+            <Typography sx={{ fontSize: '0.65rem', color: '#7E8AA8', fontFamily: "'JetBrains Mono', monospace", letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+              {isSuperAdmin ? 'Superadmin' : 'Administrator'}
             </Typography>
-          </Stack>
-
-          <Stack direction="row" spacing={2} alignItems="center">
-            <Avatar sx={{ bgcolor: "#00B6AD" }}>A</Avatar>
-          </Stack>
-        </Toolbar>
-      </AppBar>
-
-      {/* SIDEBAR */}
-      <Box
-        component="nav"
-        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
-      >
-        {/* MOBILE */}
-        <Drawer
-          variant="temporary"
-          open={mobileOpen}
-          onClose={() => setMobileOpen(false)}
-          sx={{
-            display: { xs: "block", sm: "none" },
-          }}
-        >
-          {drawer}
-        </Drawer>
-
-        {/* DESKTOP */}
-        <Drawer
-          variant="permanent"
-          sx={{
-            display: { xs: "none", sm: "block" },
-            "& .MuiDrawer-paper": {
-              width: drawerWidth,
-              boxSizing: "border-box",
-            },
-          }}
-          open
-        >
-          {drawer}
-        </Drawer>
+          </Box>
+          <Avatar
+            sx={{
+              bgcolor: isSuperAdmin ? '#92400E' : '#2BB5A8',
+              width: 34, height: 34,
+              fontSize: '0.875rem', fontWeight: 800,
+            }}
+          >
+            {initial}
+          </Avatar>
+          <Tooltip title="Sign out">
+            <IconButton
+              onClick={handleLogout}
+              size="small"
+              sx={{
+                color: '#C0392B',
+                border: '1px solid #FEE2E2',
+                borderRadius: '8px',
+                p: '6px',
+                '&:hover': { bgcolor: '#FEE2E2' },
+              }}
+            >
+              <LogoutIcon sx={{ fontSize: 18 }} />
+            </IconButton>
+          </Tooltip>
+        </Stack>
       </Box>
 
-      {/* MAIN CONTENT */}
+      {/* ── Sidebar — mobile ──────────────────────────────────────────────── */}
+      <Drawer
+        variant="temporary"
+        open={mobileOpen}
+        onClose={() => setMobileOpen(false)}
+        ModalProps={{ keepMounted: true }}
+        sx={{
+          display: { xs: 'block', sm: 'none' },
+          '& .MuiDrawer-paper': {
+            width: DRAWER_WIDTH,
+            boxSizing: 'border-box',
+            border: 'none',
+          },
+        }}
+      >
+        <Sidebar />
+      </Drawer>
+
+      {/* ── Sidebar — desktop ─────────────────────────────────────────────── */}
+      <Drawer
+        variant="permanent"
+        sx={{
+          display: { xs: 'none', sm: 'block' },
+          width: DRAWER_WIDTH,
+          flexShrink: 0,
+          '& .MuiDrawer-paper': {
+            width: DRAWER_WIDTH,
+            boxSizing: 'border-box',
+            border: 'none',
+          },
+        }}
+        open
+      >
+        <Sidebar />
+      </Drawer>
+
+      {/* ── Main content ──────────────────────────────────────────────────── */}
       <Box
         component="main"
         sx={{
           flexGrow: 1,
-          p: 3,
-          mt: 8,
-          bgcolor: "#f5f7fb",
-          minHeight: "100vh"
+          mt: '60px',
+          p: { xs: 2, md: '28px 32px' },
+          minWidth: 0,
+          minHeight: 'calc(100vh - 60px)',
+          bgcolor: '#F0F4F3',
+          overflow: 'hidden',
         }}
       >
         {children}

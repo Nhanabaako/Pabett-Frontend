@@ -6,7 +6,7 @@ import {
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-const API_URL = 'http://localhost:5000/api/gallery';
+const API_URL = 'http://localhost:5001/api/gallery';
 const ADMIN_KEY = 'yourSecretAdminKey123'; // match your backend .env key
 
 export default function GalleryAdmin() {
@@ -82,7 +82,7 @@ export default function GalleryAdmin() {
               <Box sx={{ position: 'relative' }}>
                 <CardMedia
                   component="img"
-                  image={img.url.startsWith('http') ? img.url : `http://localhost:5000${img.url}`}
+                  image={img.url.startsWith('http') ? img.url : `http://localhost:5001${img.url}`}
                   alt={img.altText}
                   sx={{ height: 200, objectFit: 'cover', borderRadius: 2 }}
                 />

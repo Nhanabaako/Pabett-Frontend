@@ -1,5 +1,6 @@
 // src/pages/GalleryAdmin.js
 import React, { useState, useEffect } from "react";
+import MenuItem from "@mui/material/MenuItem";
 import {
   Box,
   Button,
@@ -18,7 +19,7 @@ import { useNavigate } from "react-router-dom";
 
 const API_BASE =
   process.env.NODE_ENV === "development"
-    ? "http://localhost:5000"
+    ? "http://localhost:5001"
     : process.env.REACT_APP_API_URL || "https://pabett.onrender.com";
 
 const API_URL = `${API_BASE}/api/gallery`;
@@ -28,6 +29,7 @@ export default function GalleryAdmin() {
   const [file, setFile] = useState(null);
   const [altText, setAltText] = useState("");
   const [caption, setCaption] = useState("");
+  const [section, setSection] = useState("client");
   const [loading, setLoading] = useState(true);
   const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
   const navigate = useNavigate();
@@ -64,6 +66,7 @@ export default function GalleryAdmin() {
     formData.append("image", file);
     formData.append("altText", altText);
     formData.append("caption", caption);
+    formData.append("section", section);
 
     try {
       const res = await fetch(`${API_URL}/upload`, {
@@ -167,6 +170,21 @@ export default function GalleryAdmin() {
           }}
         >
           <input type="file" onChange={(e) => setFile(e.target.files[0])} />
+          <TextField
+            select
+            label="Section"
+            value={section}
+            onChange={(e) => setSection(e.target.value)}
+            size="small"
+            sx={{ minWidth: 160 }}
+          >
+            <MenuItem value="client">Client Transformations</MenuItem>
+            <MenuItem value="wig">Wig & Hairstyling</MenuItem>
+            <MenuItem value="bridal">Bridal</MenuItem>
+            <MenuItem value="makeup">Makeup</MenuItem>
+            <MenuItem value="behind_scenes">Behind the Scenes</MenuItem>
+            <MenuItem value="other">Other</MenuItem>
+          </TextField>
           <TextField
             label="Alt Text"
             value={altText}

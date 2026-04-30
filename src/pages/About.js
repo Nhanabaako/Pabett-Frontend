@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
 import {
   Box, Typography, Button, Container, Grid, Card, Link,
   Stack, Chip, Paper, Avatar,
 } from "@mui/material";
+import { BASE_URL } from "../api/api";
 import {
   LocationOn, Phone, Facebook, Instagram,
   WhatsApp as WhatsAppIcon,
@@ -37,7 +38,7 @@ const VALUES = [
   { icon: <TeamIcon />,    title: "Community",    desc: "We invest in local talent and are proud to serve and uplift the Accra beauty community." },
 ];
 
-const MILESTONES = [
+const MILESTONES_FALLBACK = [
   { year: "2016", event: "Pabett Beauty founded in Dansoman, Accra" },
   { year: "2018", event: "Launched our signature Hair Growth Oil" },
   { year: "2020", event: "Expanded to on-location bridal services" },
@@ -45,33 +46,26 @@ const MILESTONES = [
   { year: "2024", event: "Launched full wig customization studio" },
 ];
 
-const TEAM = [
-  {
-    name:   "Patricia Hemans",
-    role:   "Founder & Lead Stylist",
-    bio:    "Certified makeup artist & hair specialist with 8+ years transforming Accra's most beautiful moments.",
-    initials: "PH",
-    color:  PRIMARY,
-  },
-  {
-    name:   "Jessica ",
-    role:   "Senior Makeup Artist",
-    bio:    "Bridal and editorial specialist known for flawless, long-wear finishes and skin-first techniques.",
-    initials: "JF",
-    color:  "#9c27b0",
-  },
-  {
-    name:   "Euginia Okwabi",
-    role:   "Wig Technician",
-    bio:    "Expert in custom wig construction and lace installation. Every unit is a labour of love.",
-    initials: "EO",
-    color:  "#e91e8c",
-  },
+const TEAM_FALLBACK = [
+  { _id: "t1", name: "Patricia Hemans", role: "Founder & Lead Stylist",  bio: "Certified makeup artist & hair specialist with 8+ years transforming Accra's most beautiful moments.", initials: "PH", color: PRIMARY },
+  { _id: "t2", name: "Jessica",         role: "Senior Makeup Artist",     bio: "Bridal and editorial specialist known for flawless, long-wear finishes and skin-first techniques.",        initials: "JF", color: "#9c27b0" },
+  { _id: "t3", name: "Euginia Okwabi",  role: "Wig Technician",           bio: "Expert in custom wig construction and lace installation. Every unit is a labour of love.",               initials: "EO", color: "#e91e8c" },
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
 // COMPONENT
 // ─────────────────────────────────────────────────────────────────────────────
+function useApiData(url, fallback) {
+  const [data, setData] = useState(null);
+  useEffect(() => {
+    fetch(`${BASE_URL}${url}`)
+      .then((r) => r.json())
+      .then((d) => setData(Array.isArray(d) && d.length ? d : fallback))
+      .catch(() => setData(fallback));
+  }, [url]); // eslint-disable-line react-hooks/exhaustive-deps
+  return data || fallback;
+}
+
 export default function About({
   title       = "About PABETT Beauty",
   description = "Meet the team behind PABETT Beauty — Accra's trusted destination for professional hair styling, makeup, and hair growth treatments.",
@@ -87,6 +81,9 @@ export default function About({
     "https://www.instagram.com/pabett",
   ],
 }) {
+  const milestones = useApiData('/api/milestones', MILESTONES_FALLBACK);
+  const team       = useApiData('/api/team',       TEAM_FALLBACK);
+
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "BeautySalon",
@@ -297,7 +294,7 @@ export default function About({
               }}
             />
             <Stack spacing={0}>
-              {MILESTONES.map((m, i) => (
+              {milestones.map((m, i) => (
                 <motion.div key={i} {...fadeUp(i * 0.08)}>
                   <Box
                     sx={{
@@ -361,8 +358,8 @@ export default function About({
             </Typography>
           </Box>
           <Grid container spacing={4} justifyContent="center">
-            {TEAM.map((member, i) => (
-              <Grid item xs={12} sm={6} md={4} key={i}>
+            {team.map((member, i) => (
+              <Grid item xs={12} sm={6} md={4} key={member._id || i}>
                 <motion.div {...fadeUp(i * 0.12)}>
                   <Paper
                     sx={{
@@ -374,14 +371,15 @@ export default function About({
                     }}
                   >
                     <Avatar
+                      src={member.image || undefined}
                       sx={{
                         width: 80, height: 80, mx: "auto", mb: 2,
-                        background: `linear-gradient(135deg, ${member.color} 0%, ${member.color}88 100%)`,
+                        background: `linear-gradient(135deg, ${member.color || PRIMARY} 0%, ${member.color || PRIMARY}88 100%)`,
                         fontSize: "1.4rem", fontWeight: 800, color: "#fff",
-                        boxShadow: `0 4px 20px ${member.color}35`,
+                        boxShadow: `0 4px 20px ${member.color || PRIMARY}35`,
                       }}
                     >
-                      {member.initials}
+                      {!member.image && (member.initials || member.name?.slice(0, 2).toUpperCase())}
                     </Avatar>
                     <Typography variant="h6" fontWeight={700} color={DARK_TEXT}>{member.name}</Typography>
                     <Chip
