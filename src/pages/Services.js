@@ -272,11 +272,13 @@ export default function ServicesPage() {
                   transition={{ duration: 0.5, delay: i * 0.08 }}
                 >
                   <Paper
+                    id={svc.slug}
                     elevation={0}
                     sx={{
                       borderRadius: 4, overflow: 'hidden',
                       border: '1px solid rgba(0,0,0,0.06)',
                       boxShadow: '0 4px 32px rgba(0,0,0,0.06)',
+                      scrollMarginTop: '80px',
                       '&:hover': { boxShadow: `0 14px 52px ${color}20` },
                       transition: 'box-shadow 0.35s ease',
                     }}

@@ -50,32 +50,37 @@ const THEME = {
 // ─────────────────────────────────────────────────────────────────────────────
 const slides = [
   {
-    image:    '/images/Caro-services/Caro1.jpg',
-    badge:    '✨ Expert Styling',
-    title:    'Elevate Your Look, Effortlessly',
-    subtitle: 'Expert styling for natural radiance and glamour.',
-    cta:      'Book Consultation',
+    image:          '/images/Caro-services/Caro1.jpg',
+    objectPosition: 'center 18%',
+    badge:          '✨ Expert Styling',
+    title:          'Elevate Your Look, Effortlessly',
+    subtitle:       'Expert styling for natural radiance and glamour.',
+    cta:            'Book Consultation',
   },
   {
-    image:    '/images/Caro-services/Caro2.JPG',
-    badge:    '💍 Bridal Specialist',
-    title:    'Personalized Glamour for Every Event',
-    subtitle: 'Bespoke makeup and hair services tailored to your occasion.',
-    cta:      'Explore Services',
+    image:          '/images/Caro-services/Caro2.JPG',
+    objectPosition: 'center 22%',
+    badge:          '💍 Bridal Specialist',
+    title:          'Personalized Glamour for Every Event',
+    subtitle:       'Bespoke makeup and hair services tailored to your occasion.',
+    cta:            'Explore Services',
   },
   {
-    image:    '/images/Caro-services/Caro4.jpg',
-    badge:    '⭐ Luxury Experience',
-    title:    'Luxury Beauty Experience',
-    subtitle: 'Book your appointment for exceptional, professional care.',
-    cta:      'Reserve Your Slot',
+    image:          '/images/Caro-services/Caro4.jpg',
+    objectPosition: 'center 14%',
+    badge:          '⭐ Luxury Experience',
+    title:          'Luxury Beauty Experience',
+    subtitle:       'Book your appointment for exceptional, professional care.',
+    cta:            'Reserve Your Slot',
   },
   {
-    image:    '/images/Pabett oil Flier.png',
-    badge:    '🌿 Signature Product',
-    title:    'PABETT Hair Growth Oil',
-    subtitle: 'Nourish. Strengthen. Grow. Shop our signature hair oil.',
-    cta:      'Shop Now',
+    image:          '/images/Pabett oil Flier.png',
+    objectPosition: 'center center',
+    isFlier:        true,
+    badge:          '🌿 Signature Product',
+    title:          'PABETT Hair Growth Oil',
+    subtitle:       'Nourish. Strengthen. Grow. Shop our signature hair oil.',
+    cta:            'Shop Now',
   },
 ];
 
@@ -161,6 +166,13 @@ const Hero = () => (
       .hero-swiper .swiper-pagination-bullet-active {
         background: #fff; width: 26px; border-radius: 4px;
       }
+      @keyframes kenBurns {
+        from { transform: scale(1.0); }
+        to   { transform: scale(1.08); }
+      }
+      .hero-swiper .swiper-slide-active .hero-img {
+        animation: kenBurns 7s ease-out forwards;
+      }
     `}</style>
 
     <Box sx={{ height: { xs: '84vh', sm: '90vh', md: '96vh' }, width: '100%', overflow: 'hidden', position: 'relative' }}>
@@ -175,15 +187,26 @@ const Hero = () => (
       >
         {slides.map((s, i) => (
           <SwiperSlide key={i}>
-            <Box sx={{ position: 'relative', height: '100%', width: '100%' }}>
+            <Box sx={{
+              position: 'relative', height: '100%', width: '100%', overflow: 'hidden',
+              background: s.isFlier ? '#1a2a4a' : '#111',
+            }}>
               <Box
                 component="img" src={s.image} alt={s.title}
-                sx={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 20%', display: 'block' }}
+                className="hero-img"
+                sx={{
+                  width: '100%', height: '100%', display: 'block',
+                  objectFit: s.isFlier ? 'contain' : 'cover',
+                  objectPosition: s.objectPosition || 'center center',
+                  transformOrigin: 'center center',
+                }}
               />
-              {/* Multi-layer overlay: subtle top vignette, heavy bottom */}
+              {/* Overlay — lighter for the product flier so it stays readable */}
               <Box sx={{
                 position: 'absolute', inset: 0,
-                background: 'linear-gradient(180deg, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0.04) 28%, rgba(0,0,0,0.58) 66%, rgba(0,0,0,0.88) 100%)',
+                background: s.isFlier
+                  ? 'linear-gradient(180deg, rgba(0,0,0,0.10) 0%, rgba(0,0,0,0.02) 40%, rgba(0,0,0,0.62) 100%)'
+                  : 'linear-gradient(180deg, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0.04) 28%, rgba(0,0,0,0.58) 66%, rgba(0,0,0,0.88) 100%)',
               }} />
               {/* Slide content */}
               <Box sx={{

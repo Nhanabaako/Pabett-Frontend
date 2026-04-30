@@ -1,7 +1,7 @@
 import React from "react";
 import {
   Box, Grid, Typography, Link as MLink,
-  IconButton, Divider, Stack, Chip,
+  IconButton, Stack, Chip,
 } from "@mui/material";
 import InstagramIcon   from "@mui/icons-material/Instagram";
 import FacebookIcon    from "@mui/icons-material/Facebook";
@@ -19,6 +19,7 @@ const BRAND = {
   primary:  "#00B6AD",
   darkText: "#2C3E64",
   bg:       "#F0F4F8",
+  gradient: "linear-gradient(135deg, #00B6AD 0%, #007B76 100%)",
 };
 
 const socialVariants = {
@@ -30,12 +31,9 @@ export default function Footer({
   companyName = "",
   tagline     = "Elevating natural beauty with expert care.",
   services    = [
-    "Hair Growth Treatment",
-    "Bridal Hair Styling",
-    "Wig-Cap Making",
-    "Makeup & Hair Training",
-    "Wig Installation",
-    "Hair Styling & Treatments",
+    { label: "Hair Styling",    slug: "hair"   },
+    { label: "Wig Units",       slug: "wigs"   },
+    { label: "Makeup Services", slug: "makeup" },
   ],
   contact = {
     phone:    "+233 57 190 1526",
@@ -69,13 +67,12 @@ export default function Footer({
   };
 
   const colTitle = (text) => (
-    <Typography
-      variant="subtitle1"
-      fontWeight={800}
-      sx={{ color: BRAND.darkText, mb: 2, letterSpacing: 0.4 }}
-    >
-      {text}
-    </Typography>
+    <Box mb={2.5}>
+      <Typography variant="subtitle1" fontWeight={800} sx={{ color: BRAND.darkText, letterSpacing: 0.5, mb: 0.8 }}>
+        {text}
+      </Typography>
+      <Box sx={{ width: 30, height: 3, borderRadius: 2, background: BRAND.gradient }} />
+    </Box>
   );
 
   const linkStyle = {
@@ -92,11 +89,11 @@ export default function Footer({
   };
 
   return (
-    <Box
-      component="footer"
-      role="contentinfo"
-      sx={{ bgcolor: BRAND.bg, borderTop: "1px solid #dde3ec" }}
-    >
+    <Box component="footer" role="contentinfo" sx={{ bgcolor: BRAND.bg }}>
+
+      {/* ── Gradient accent bar ── */}
+      <Box sx={{ height: 3, background: `linear-gradient(90deg, transparent 0%, ${BRAND.primary} 30%, #007B76 70%, transparent 100%)` }} />
+
       <Box sx={{ maxWidth: 1200, mx: "auto", px: { xs: 3, md: 6 }, pt: { xs: 6, md: 8 }, pb: 4 }}>
         <Grid container spacing={5}>
 
@@ -151,7 +148,7 @@ export default function Footer({
                       p: 1,
                       borderRadius: 2,
                       transition: "background 0.2s",
-                      "&:hover": { bgcolor: `${color}22` },
+                      "&:hover": { bgcolor: `${color}22`, boxShadow: `0 0 14px ${color}55` },
                     }}
                   >
                     {React.cloneElement(icon, { fontSize: "small" })}
@@ -184,15 +181,15 @@ export default function Footer({
               {colTitle("Services")}
               {services.map((s) => (
                 <MLink
-                  key={s}
-                  href={`/Services#${s.toLowerCase().replace(/\s+/g, "-")}`}
+                  key={s.slug || s}
+                  href={`/Services#${s.slug || s.toLowerCase().replace(/\s+/g, "-")}`}
                   sx={linkStyle}
                 >
                   <Box
                     component="span"
                     sx={{ width: 5, height: 5, borderRadius: "50%", bgcolor: BRAND.primary, flexShrink: 0 }}
                   />
-                  {s}
+                  {s.label || s}
                 </MLink>
               ))}
             </MotionBox>
@@ -285,8 +282,8 @@ export default function Footer({
           </Grid>
         </Grid>
 
-        {/* ── Divider + bottom bar ── */}
-        <Divider sx={{ mt: 6, mb: 3 }} />
+        {/* ── Gradient divider + bottom bar ── */}
+        <Box sx={{ mt: 6, mb: 3, height: 1, background: `linear-gradient(90deg, transparent 0%, ${BRAND.primary}55 40%, ${BRAND.primary}55 60%, transparent 100%)` }} />
 
         <Box
           sx={{

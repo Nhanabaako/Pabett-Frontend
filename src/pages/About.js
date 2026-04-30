@@ -32,10 +32,10 @@ const fadeUp = (delay = 0) => ({
 // DATA
 // ─────────────────────────────────────────────────────────────────────────────
 const VALUES = [
-  { icon: <HeartIcon />,   title: "Passion",      desc: "We pour genuine love into every look we create, treating each client as our greatest canvas." },
-  { icon: <TrophyIcon />,  title: "Excellence",   desc: "Only premium products and the highest standards of craft — no shortcuts, ever." },
-  { icon: <SparkleIcon />, title: "Creativity",   desc: "Every client is unique. We bring fresh ideas and customized solutions to every appointment." },
-  { icon: <TeamIcon />,    title: "Community",    desc: "We invest in local talent and are proud to serve and uplift the Accra beauty community." },
+  { icon: <HeartIcon />,   title: "Passion",    desc: "We pour genuine love into every look we create, treating each client as our greatest canvas.", accent: "#e8a598" },
+  { icon: <TrophyIcon />,  title: "Excellence", desc: "Only premium products and the highest standards of craft — no shortcuts, ever.",               accent: "#00B6AD" },
+  { icon: <SparkleIcon />, title: "Creativity", desc: "Every client is unique. We bring fresh ideas and customized solutions to every appointment.",    accent: "#9c27b0" },
+  { icon: <TeamIcon />,    title: "Community",  desc: "We invest in local talent and are proud to serve and uplift the Accra beauty community.",        accent: "#2C3E64" },
 ];
 
 const MILESTONES_FALLBACK = [
@@ -134,12 +134,27 @@ export default function About({
           minHeight: { xs: "52vh", md: "62vh" },
           display: "flex", alignItems: "center", justifyContent: "center",
           position: "relative", overflow: "hidden",
-          background: "linear-gradient(135deg, #2C3E64 0%, #1a2a4a 100%)",
+          background: "#1a2a4a",
         }}
       >
+        {/* Background image — blurred & darkened */}
+        <Box
+          component="img"
+          src="/images/Ceo.jpg"
+          alt=""
+          aria-hidden="true"
+          sx={{
+            position: "absolute", inset: 0, width: "100%", height: "100%",
+            objectFit: "cover", objectPosition: "center 20%",
+            filter: "blur(3px) brightness(0.3)",
+            transform: "scale(1.06)",
+          }}
+        />
+        {/* Gradient overlay */}
+        <Box sx={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(44,62,100,0.88) 0%, rgba(26,42,74,0.78) 100%)" }} />
         {/* Decorative shapes */}
-        <Box sx={{ position: "absolute", top: -100, right: -100, width: 400, height: 400, borderRadius: "50%", bgcolor: `${PRIMARY}15`, pointerEvents: "none" }} />
-        <Box sx={{ position: "absolute", bottom: -60, left: -60, width: 240, height: 240, borderRadius: "50%", bgcolor: `${PRIMARY}10`, pointerEvents: "none" }} />
+        <Box sx={{ position: "absolute", top: -100, right: -100, width: 400, height: 400, borderRadius: "50%", bgcolor: `${PRIMARY}12`, pointerEvents: "none" }} />
+        <Box sx={{ position: "absolute", bottom: -60, left: -60, width: 240, height: 240, borderRadius: "50%", bgcolor: `${PRIMARY}08`, pointerEvents: "none" }} />
 
         <Container sx={{ position: "relative", zIndex: 2, textAlign: "center", color: "#fff", py: 8, px: 3 }}>
           <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
@@ -169,7 +184,9 @@ export default function About({
             <Grid item xs={12} md={6}>
               <motion.div {...fadeUp(0)}>
                 <Chip label="WHO WE ARE" sx={{ bgcolor: `${PRIMARY}15`, color: PRIMARY, fontWeight: 700, mb: 2 }} />
-             
+                <Typography variant="h4" fontWeight={800} color={DARK_TEXT} sx={{ mb: 2, fontSize: { xs: "1.8rem", md: "2.1rem" }, lineHeight: 1.15 }}>
+                  Born in Accra, Built on Passion
+                </Typography>
                 <Typography color="text.secondary" sx={{ lineHeight: 1.9, mb: 2 }}>
                   Founded in 2016 in the heart of Dansoman, Accra, Pabett Beauty started as a one-chair dream
                   and has grown into one of the most trusted beauty destinations in the city. Our founder,
@@ -180,55 +197,75 @@ export default function About({
                   and our bestselling Pabett Hair Growth Oil. Every service is delivered by certified professionals
                   who genuinely care about your outcome.
                 </Typography>
-                <Stack direction="row" spacing={2} flexWrap="wrap" gap={1}>
+                <Grid container spacing={1.5} sx={{ mt: 1 }}>
                   {[
                     { value: "8+",   label: "Years in Business" },
                     { value: "500+", label: "Happy Clients" },
                     { value: "3",    label: "Expert Stylists" },
                     { value: "99%",  label: "Satisfaction Rate" },
                   ].map((stat, i) => (
-                    <Box key={i} textAlign="center" sx={{ minWidth: 80 }}>
-                      <Typography fontWeight={800} color={PRIMARY} sx={{ fontSize: "1.7rem", lineHeight: 1 }}>
-                        {stat.value}
-                      </Typography>
-                      <Typography variant="caption" color="text.secondary" fontWeight={500}>
-                        {stat.label}
-                      </Typography>
-                    </Box>
+                    <Grid item xs={6} sm={3} key={i}>
+                      <Box textAlign="center" sx={{ py: 1.5, px: 1, borderRadius: 3, bgcolor: `${PRIMARY}08`, border: `1px solid ${PRIMARY}18` }}>
+                        <Typography fontWeight={800} color={PRIMARY} sx={{ fontSize: "1.7rem", lineHeight: 1 }}>
+                          {stat.value}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary" fontWeight={500} display="block">
+                          {stat.label}
+                        </Typography>
+                      </Box>
+                    </Grid>
                   ))}
-                </Stack>
+                </Grid>
               </motion.div>
             </Grid>
             <Grid item xs={12} md={6}>
               <motion.div {...fadeUp(0.15)}>
-                <Box
-                  sx={{
-                    borderRadius: 4, overflow: "hidden",
-                    boxShadow: "0 16px 56px rgba(0,182,173,0.15)",
-                    position: "relative",
-                  }}
-                >
+                <Box sx={{ position: "relative", pr: { sm: 2 } }}>
+                  {/* Decorative offset border */}
+                  <Box sx={{
+                    position: "absolute", top: 16, right: -8, width: "100%", height: "100%",
+                    borderRadius: 4, border: `2px solid ${PRIMARY}35`, zIndex: 0,
+                    display: { xs: "none", sm: "block" },
+                  }} />
                   <Box
-                    component="img"
-                    src="/images/Ceo.jpg"
-                    alt="Pabett Beauty Team at work"
-                    sx={{ width: "100%", display: "block", objectFit: "cover", maxHeight: 480 }}
-                  />
-                  {/* floating badge */}
-                  <Paper
                     sx={{
-                      position: "absolute", bottom: 20, left: 20,
-                      px: 2.5, py: 1.5, borderRadius: 3,
-                      boxShadow: "0 8px 28px rgba(0,0,0,0.15)",
-                      display: "flex", alignItems: "center", gap: 1.5,
+                      borderRadius: 4, overflow: "hidden",
+                      boxShadow: "0 20px 64px rgba(0,182,173,0.18)",
+                      position: "relative", zIndex: 1,
                     }}
                   >
-                    <Box sx={{ fontSize: "1.8rem" }}>🏆</Box>
-                    <Box>
-                      <Typography fontWeight={700} color={DARK_TEXT} sx={{ lineHeight: 1.2 }}>Top-Rated</Typography>
-                      <Typography variant="caption" color="text.secondary">Beauty Salon, Accra</Typography>
-                    </Box>
-                  </Paper>
+                    <Box
+                      component="img"
+                      src="/images/Ceo.jpg"
+                      alt="Pabett Beauty Team at work"
+                      sx={{
+                        width: "100%", display: "block", objectFit: "cover",
+                        maxHeight: 480, objectPosition: "center 20%",
+                        transition: "transform 0.6s ease",
+                        "&:hover": { transform: "scale(1.03)" },
+                      }}
+                    />
+                    {/* Bottom gradient fade */}
+                    <Box sx={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "38%", background: "linear-gradient(to top, rgba(0,0,0,0.38) 0%, transparent 100%)" }} />
+                    {/* Floating badge */}
+                    <Paper
+                      elevation={0}
+                      sx={{
+                        position: "absolute", bottom: 20, left: 20,
+                        px: 2.5, py: 1.5, borderRadius: 3,
+                        boxShadow: "0 8px 28px rgba(0,0,0,0.18)",
+                        display: "flex", alignItems: "center", gap: 1.5,
+                        backdropFilter: "blur(12px)",
+                        background: "rgba(255,255,255,0.92)",
+                      }}
+                    >
+                      <Box sx={{ fontSize: "1.8rem" }}>🏆</Box>
+                      <Box>
+                        <Typography fontWeight={700} color={DARK_TEXT} sx={{ lineHeight: 1.2 }}>Top-Rated</Typography>
+                        <Typography variant="caption" color="text.secondary">Beauty Salon, Accra</Typography>
+                      </Box>
+                    </Paper>
+                  </Box>
                 </Box>
               </motion.div>
             </Grid>
@@ -246,23 +283,34 @@ export default function About({
           <Grid container spacing={3}>
             {VALUES.map((v, i) => (
               <Grid item xs={12} sm={6} md={3} key={i}>
-                <motion.div {...fadeUp(i * 0.1)}>
+                <motion.div {...fadeUp(i * 0.1)} style={{ height: "100%", display: "flex" }}>
                   <Paper
+                    className="value-card"
                     sx={{
-                      p: 3.5, borderRadius: 4, height: "100%", textAlign: "center",
+                      p: 3.5, borderRadius: 4, width: "100%", textAlign: "center",
+                      display: "flex", flexDirection: "column", alignItems: "center",
                       border: "1px solid #edf2f7",
                       boxShadow: "0 2px 12px rgba(0,0,0,0.04)",
+                      position: "relative", overflow: "hidden",
                       transition: "transform 0.3s, box-shadow 0.3s",
-                      "&:hover": { transform: "translateY(-6px)", boxShadow: `0 12px 32px ${PRIMARY}15` },
+                      "&::before": {
+                        content: '""',
+                        position: "absolute", top: 0, left: 0, right: 0, height: 4,
+                        background: `linear-gradient(90deg, ${v.accent} 0%, ${v.accent}88 100%)`,
+                      },
+                      "&:hover": { transform: "translateY(-8px)", boxShadow: `0 16px 40px ${v.accent}22` },
+                      "&:hover .val-icon": { transform: "scale(1.1) rotate(-6deg)" },
                     }}
                   >
                     <Box
+                      className="val-icon"
                       sx={{
-                        width: 56, height: 56, borderRadius: "50%",
-                        background: GRADIENT,
+                        width: 60, height: 60, borderRadius: "16px",
+                        background: `linear-gradient(135deg, ${v.accent} 0%, ${v.accent}cc 100%)`,
                         display: "inline-flex", alignItems: "center", justifyContent: "center",
-                        color: "#fff", mb: 2,
-                        boxShadow: `0 4px 16px ${PRIMARY}35`,
+                        color: "#fff", mb: 2.5,
+                        boxShadow: `0 6px 20px ${v.accent}40`,
+                        transition: "transform 0.3s",
                       }}
                     >
                       {v.icon}
@@ -285,64 +333,73 @@ export default function About({
             <Typography variant="h4" fontWeight={800} color={DARK_TEXT}>Milestones That Made Us</Typography>
           </Box>
           <Box sx={{ position: "relative" }}>
-            {/* Timeline line */}
-            <Box
-              sx={{
-                position: "absolute", left: { xs: 16, md: "50%" },
-                top: 0, bottom: 0, width: 2, bgcolor: `${PRIMARY}25`,
-                transform: { md: "translateX(-50%)" },
-              }}
-            />
-            <Stack spacing={0}>
-              {milestones.map((m, i) => (
-                <motion.div key={i} {...fadeUp(i * 0.08)}>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: { xs: "row", md: i % 2 === 0 ? "row" : "row-reverse" },
-                      alignItems: "center",
-                      mb: 4,
-                      pl: { xs: 5, md: 0 },
-                    }}
-                  >
-                    {/* Dot */}
-                    <Box
-                      sx={{
-                        position: { xs: "absolute", md: "relative" },
-                        left: { xs: 8, md: "auto" },
-                        width: 16, height: 16, borderRadius: "50%",
-                        bgcolor: PRIMARY, border: "3px solid #fff",
-                        boxShadow: `0 0 0 3px ${PRIMARY}40`,
-                        flexShrink: 0,
-                        mx: { md: 2 },
-                        zIndex: 1,
-                      }}
-                    />
-                    {/* Card */}
-                    <Paper
-                      sx={{
-                        p: 2.5, borderRadius: 3, flex: 1,
-                        maxWidth: { md: "42%" },
-                        ml: { xs: 0, md: i % 2 === 0 ? 0 : "auto" },
-                        mr: { md: i % 2 === 0 ? "auto" : 0 },
-                        border: "1px solid #edf2f7",
-                        boxShadow: "0 2px 12px rgba(0,0,0,0.05)",
-                      }}
-                    >
-                      <Typography
-                        variant="caption"
-                        sx={{ bgcolor: `${PRIMARY}15`, color: PRIMARY, px: 1.2, py: 0.4, borderRadius: 1, fontWeight: 700 }}
-                      >
-                        {m.year}
-                      </Typography>
-                      <Typography variant="body1" fontWeight={600} color={DARK_TEXT} sx={{ mt: 1 }}>
-                        {m.event}
-                      </Typography>
-                    </Paper>
+            {/* Vertical gradient line */}
+            <Box sx={{
+              position: "absolute",
+              left: { xs: 20, md: "50%" },
+              top: 0, bottom: 0, width: 2,
+              background: `linear-gradient(to bottom, transparent, ${PRIMARY}55 15%, ${PRIMARY}55 85%, transparent)`,
+              transform: { md: "translateX(-50%)" },
+            }} />
+
+            {milestones.map((m, i) => (
+              <motion.div key={i} {...fadeUp(i * 0.08)}>
+                <Box sx={{
+                  position: "relative",
+                  display: "flex",
+                  justifyContent: { xs: "flex-start", md: i % 2 === 0 ? "flex-start" : "flex-end" },
+                  mb: 5,
+                }}>
+                  {/* Dot — centred on the line, positioned relative to this row */}
+                  <Box sx={{
+                    position: "absolute",
+                    left:      { xs: 11, md: "calc(50% - 9px)" },
+                    top: "50%", transform: "translateY(-50%)",
+                    zIndex: 2,
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                  }}>
+                    <Box sx={{
+                      position: "absolute", width: 28, height: 28, borderRadius: "50%",
+                      bgcolor: `${PRIMARY}25`,
+                      animation: "tlPulse 2.2s ease-in-out infinite",
+                      "@keyframes tlPulse": {
+                        "0%, 100%": { transform: "scale(1)", opacity: 0.8 },
+                        "50%":      { transform: "scale(1.7)", opacity: 0.2 },
+                      },
+                    }} />
+                    <Box sx={{
+                      width: 18, height: 18, borderRadius: "50%", position: "relative",
+                      bgcolor: PRIMARY, border: "3px solid #fff",
+                      boxShadow: `0 0 0 3px ${PRIMARY}40, 0 0 16px ${PRIMARY}55`,
+                    }} />
                   </Box>
-                </motion.div>
-              ))}
-            </Stack>
+
+                  {/* Card — offset from the dot on mobile, half-width on desktop */}
+                  <Paper sx={{
+                    p: 3, borderRadius: 3,
+                    width:  { xs: "calc(100% - 50px)", md: "44%" },
+                    ml: { xs: "50px", md: i % 2 === 0 ? 0    : "auto" },
+                    mr: { xs: 0,      md: i % 2 === 0 ? "auto" : 0    },
+                    border: `1px solid ${PRIMARY}20`,
+                    boxShadow: "0 2px 16px rgba(0,0,0,0.06)",
+                    transition: "transform 0.3s, box-shadow 0.3s",
+                    "&:hover": { transform: "translateY(-3px)", boxShadow: `0 10px 32px ${PRIMARY}15` },
+                  }}>
+                    <Typography variant="caption" sx={{
+                      display: "inline-block",
+                      bgcolor: PRIMARY, color: "#fff",
+                      px: 1.5, py: 0.5, borderRadius: 1,
+                      fontWeight: 700, fontSize: "0.78rem",
+                    }}>
+                      {m.year}
+                    </Typography>
+                    <Typography variant="body1" fontWeight={600} color={DARK_TEXT} sx={{ mt: 1 }}>
+                      {m.event}
+                    </Typography>
+                  </Paper>
+                </Box>
+              </motion.div>
+            ))}
           </Box>
         </Container>
       </Box>
@@ -359,11 +416,12 @@ export default function About({
           </Box>
           <Grid container spacing={4} justifyContent="center">
             {team.map((member, i) => (
-              <Grid item xs={12} sm={6} md={4} key={member._id || i}>
-                <motion.div {...fadeUp(i * 0.12)}>
+              <Grid item xs={12} sm={4} key={member._id || i}>
+                <motion.div {...fadeUp(i * 0.12)} style={{ height: "100%", display: "flex" }}>
                   <Paper
                     sx={{
-                      p: 4, borderRadius: 4, textAlign: "center", height: "100%",
+                      p: 4, borderRadius: 4, textAlign: "center",
+                      width: "100%", display: "flex", flexDirection: "column", alignItems: "center",
                       border: "1px solid #edf2f7",
                       boxShadow: "0 2px 12px rgba(0,0,0,0.05)",
                       transition: "transform 0.3s, box-shadow 0.3s",
@@ -373,10 +431,12 @@ export default function About({
                     <Avatar
                       src={member.image || undefined}
                       sx={{
-                        width: 80, height: 80, mx: "auto", mb: 2,
+                        width: 96, height: 96, mx: "auto", mb: 2,
                         background: `linear-gradient(135deg, ${member.color || PRIMARY} 0%, ${member.color || PRIMARY}88 100%)`,
-                        fontSize: "1.4rem", fontWeight: 800, color: "#fff",
-                        boxShadow: `0 4px 20px ${member.color || PRIMARY}35`,
+                        fontSize: "1.6rem", fontWeight: 800, color: "#fff",
+                        boxShadow: `0 0 0 4px #fff, 0 0 0 6px ${member.color || PRIMARY}40, 0 8px 28px ${member.color || PRIMARY}30`,
+                        transition: "transform 0.3s",
+                        "&:hover": { transform: "scale(1.06)" },
                       }}
                     >
                       {!member.image && (member.initials || member.name?.slice(0, 2).toUpperCase())}
@@ -538,12 +598,14 @@ export default function About({
       {/* ── CTA ── */}
       <Box
         sx={{
-          py: { xs: 7, md: 10 },
+          py: { xs: 8, md: 11 },
           background: "linear-gradient(135deg, #2C3E64 0%, #1a2a4a 100%)",
           textAlign: "center", position: "relative", overflow: "hidden",
         }}
       >
-        <Box sx={{ position: "absolute", top: -80, right: -80, width: 320, height: 320, borderRadius: "50%", bgcolor: `${PRIMARY}18`, pointerEvents: "none" }} />
+        <Box sx={{ position: "absolute", top: -80, right: -80,   width: 320, height: 320, borderRadius: "50%", bgcolor: `${PRIMARY}18`, pointerEvents: "none" }} />
+        <Box sx={{ position: "absolute", bottom: -60, left: -60, width: 220, height: 220, borderRadius: "50%", bgcolor: `${PRIMARY}12`, pointerEvents: "none" }} />
+        <Box sx={{ position: "absolute", top: "40%", left: "8%", width: 70,  height: 70,  borderRadius: "50%", bgcolor: `${PRIMARY}10`, pointerEvents: "none" }} />
         <Container maxWidth="sm" sx={{ position: "relative", zIndex: 1 }}>
           <motion.div {...fadeUp(0)}>
             <Typography variant="h4" color="#fff" fontWeight={800} mb={1.5} sx={{ fontSize: { xs: "1.8rem", md: "2.2rem" } }}>
